@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: celery-beat
+  name: celery-beat
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: celery-beat
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - args:
+        - bash
+        - -c
+        - celery beat -l info -A collector.scheduler.celery
+        env:
+        - name: CELERY_BROKER_URL
+          value: redis://redis:6379/0
+        - name: COLLECTOR_DISCARD
+          value: "True"
+        - name: FLASK_APP
+          value: /collector
+        - name: KONG_HOST
+          value: kong
+        - name: KONG_PORT
+          value: "8001"
+        - name: PYTHONPATH
+          value: /collector
+        - name: SQLALCHEMY_DATABASE_URI
+          value: postgresql://collector:collector@collector-database:5432/collector
+        image: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain:master
+        name: celery-beat
+        resources: {}
+      restartPolicy: Always
+status: {}
