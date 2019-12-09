@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -11,6 +11,9 @@ metadata:
 spec:
   replicas: 1
   strategy: {}
+  selector:
+    matchLabels:
+        io.kompose.service: celery-worker
   template:
     metadata:
       creationTimestamp: null
@@ -23,10 +26,10 @@ spec:
       - args:
         - bash
         - -c
-        - /wait_for_db && celery worker -l info -A collector.scheduler.celery --concurrency=1
+        - while ! </dev/tcp/{{ .Values.postgres.host }}/5432; do sleep 1; done;  celery worker -l info -A collector.scheduler.celery --concurrency=1
         env:
         - name: CELERY_BROKER_URL
-          value: redis://redis:6379/0
+          value: {{ .Values.redis.uri }}
         - name: COLLECTOR_DISCARD
           value: "True"
         - name: FLASK_APP
@@ -38,8 +41,8 @@ spec:
         - name: PYTHONPATH
           value: /collector
         - name: SQLALCHEMY_DATABASE_URI
-          value: postgresql://collector:collector@collector-database:5432/collector
-        image: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain:master
+          value: postgres://collector:collector@{{ .Values.postgres.host }}:5432/collector
+        image: {{ .Values.image }}
         name: celery-worker
         resources: {}
       restartPolicy: Always

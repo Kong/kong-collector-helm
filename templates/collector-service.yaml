@@ -9,10 +9,9 @@ metadata:
     io.kompose.service: collector
   name: collector
 spec:
+  type: {{ .Values.service.type }}
   ports:
-  - name: "5000"
-    port: 5000
-    targetPort: 5000
+    - port: {{ .Values.service.port }}
   selector:
     io.kompose.service: collector
 status:

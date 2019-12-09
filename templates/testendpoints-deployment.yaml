@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -10,6 +10,9 @@ metadata:
   name: testendpoints
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+        io.kompose.service: testendpoints
   strategy: {}
   template:
     metadata:
@@ -20,7 +23,7 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-      - image: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain-test-endpoints:master
+      - image: {{ .Values.image }}
         name: testendpoints
         ports:
         - containerPort: 6000
