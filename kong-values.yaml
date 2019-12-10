@@ -2,17 +2,17 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: kong
-  # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.3
+  # repository: kong
+  repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
+  tag: latest
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## If using the official Kong Enterprise registry above, you MUST provide a secret.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
-  # pullSecrets:
-  #   - myRegistrKeySecretName
+  pullSecrets:
+    - regcred
 
 waitImage:
   repository: busybox
@@ -28,13 +28,13 @@ admin:
 
   # HTTPS traffic on the admin port
   # if set to false also set readinessProbe and livenessProbe httpGet scheme's to 'HTTP'
-  useTLS: true
-  servicePort: 8444
-  containerPort: 8444
+  useTLS: false
+  servicePort: 8001
+  containerPort: 8001
   # Kong admin service type
   type: NodePort
   # Set a nodePort which is available
-  # nodePort: 32444
+  nodePort: 32001
   # Kong admin ingress settings.
   ingress:
     # Enable/disable exposure using ingress.
@@ -106,7 +106,7 @@ manager:
     servicePort: 8002
     containerPort: 8002
     # Set a nodePort which is available if service type is NodePort
-    # nodePort: 32080
+    nodePort: 32080
 
   tls:
     enabled: true
@@ -212,11 +212,11 @@ portalapi:
 # RBAC and SMTP configuration have additional options that must all be set together
 # Other settings should be added to the "env" settings below
 enterprise:
-  enabled: false
+  enabled: true
   # Kong Enterprise license secret name
   # This secret must contain a single 'license' key, containing your base64-encoded license data
   # The license secret is required for all Kong Enterprise deployments
-  license_secret: you-must-create-a-kong-license-secret
+  license_secret: kong-enterprise-license
   # Session configuration secret
   # The session conf secret is required if using RBAC or the Portal
   vitals:
@@ -273,7 +273,7 @@ updateStrategy: {}
 # e.g. setting pg_user here will override the value normally set when postgresql.enabled
 # is set below. In general, you should not set values here if they are set elsewhere.
 env:
-  database: "off"
+  database: postgres
   nginx_worker_processes: "1"
   proxy_access_log: /dev/stdout
   admin_access_log: /dev/stdout
@@ -283,7 +283,11 @@ env:
   admin_error_log: /dev/stderr
   admin_gui_error_log: /dev/stderr
   portal_api_error_log: /dev/stderr
-
+  pg_host: k-psql-postgresql
+  pg_user: kong
+  pg_password: kong
+  admin_listen: 0.0.0.0:8001, 0.0.0.0:32001
+  admin_api_uri: 192.168.64.5:32001
 # If you want to specify resources, uncomment the following
 # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 resources: {}
@@ -359,11 +363,11 @@ podSecurityPolicy:
 
 # PostgreSQL chart configs
 postgresql:
-  enabled: false
-  # postgresqlUsername: kong
-  # postgresqlDatabase: kong
-  # service:
-  #   port: 5432
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  service:
+    port: 5432
 
 # Custom Kong plugins can be loaded into Kong by mounting the plugin code
 # into the file-system of Kong container.

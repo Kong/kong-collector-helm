@@ -35,9 +35,9 @@ spec:
         - name: FLASK_APP
           value: /collector
         - name: KONG_HOST
-          value: kong
+          value: {{ .Values.kong.host }}
         - name: KONG_PORT
-          value: "8001"
+          value: "{{ .Values.kong.port }}"
         - name: PYTHONPATH
           value: /collector
         - name: SQLALCHEMY_DATABASE_URI
