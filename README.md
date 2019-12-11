@@ -17,3 +17,12 @@ helm install my-kong stable/kong -f kong-values.yaml
 
 helm install collector .
 ```
+
+### TODO
+
+- use ingress in testing environment
+- fix hardcoded admin_api ip address in kong-values.yaml
+- remove unnecessarily exposed env vars in collector deployments
+- remove license and regcred secrets
+- fix helm test
+- improve NOTES.txt
