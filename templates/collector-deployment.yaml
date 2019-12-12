@@ -20,13 +20,15 @@ spec:
       labels:
         io.kompose.service: collector
     spec:
+    {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: regcred
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       containers:
       - args:
         - bash
         - -c
-        - while ! </dev/tcp/{{ .Values.postgres.host }}/5432; do sleep 1; done; flask db upgrade && /collector/run-collector.sh
+        - while ! </dev/tcp/{{ .Values.postgres.host }}/{{ .Values.postgres.port }}; do sleep 1; done; flask db upgrade && /collector/run-collector.sh
         env:
         - name: CELERY_BROKER_URL
           value: {{ .Values.redis.uri }}
@@ -39,7 +41,7 @@ spec:
         - name: KONG_PORT
           value: "{{ .Values.kong.port }}"
         - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://collector:collector@{{ .Values.postgres.host }}:5432/collector"
+          value: "postgres://collector:collector@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: collector
         ports:
