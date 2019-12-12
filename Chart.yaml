@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kong-collectorapi
-description: A Helm chart for Kubernetes
+description: Kong Brain and Kong Immunity help automate the entire API and service development life cycle. By automating processes for configuration, traffic analysis and the creation of documentation, Kong Brain and Kong Immunity help organizations improve efficiency, governance, reliability and security.
 
 type: application
 
@@ -10,5 +10,5 @@ version: 0.1.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.16.0
+appVersion: 1.0.0
 

@@ -13,14 +13,14 @@ $ helm install collector .
 
 ## Introduction
 
-This chart bootstraps a Kong-Collector deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-x/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 
 ## Prerequisites
 
 - Kubernetes 1.12+
 - Helm 2.11+ or Helm 3.0-beta3+
-- Kong Enterprise Edition
+- Kong Enterprise version 0.35.3+ or later
 - Postgresql
 - Redis
 
@@ -51,8 +51,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 
 |                   Parameter                   |                                                                                Description                                                                                |                            Default                            |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
-| `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-internal-builds.bintray.io/kong-brain`                                                         |
-| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `master`                                                         |
+| `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
+| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.0.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
 | `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
