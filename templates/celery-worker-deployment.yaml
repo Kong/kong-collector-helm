@@ -20,13 +20,15 @@ spec:
       labels:
         io.kompose.service: celery-worker
     spec:
+    {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: regcred
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       containers:
       - args:
         - bash
         - -c
-        - while ! </dev/tcp/{{ .Values.postgres.host }}/5432; do sleep 1; done;  celery worker -l info -A collector.scheduler.celery --concurrency=1
+        - while ! </dev/tcp/{{ .Values.postgres.host }}/{{ .Values.postgres.port }}; do sleep 1; done;  celery worker -l info -A collector.scheduler.celery --concurrency=1
         env:
         - name: CELERY_BROKER_URL
           value: {{ .Values.redis.uri }}
@@ -41,7 +43,7 @@ spec:
         - name: PYTHONPATH
           value: /collector
         - name: SQLALCHEMY_DATABASE_URI
-          value: postgres://collector:collector@{{ .Values.postgres.host }}:5432/collector
+          value: postgres://collector:collector@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: celery-worker
         resources: {}

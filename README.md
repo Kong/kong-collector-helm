@@ -50,13 +50,15 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-internal-builds.bintray.io/kong-brain`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `master`                                                         |
+| `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong proxy host name                                                                                                                     | `my-kong-kong-proxy`                                                         |
-| `kong.port`        | Kong port                                                                                                                    | `8001`                                                         |
+| `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
 | `postgres.host`            | PostgreSQL host name                                                                              | `my-psql-postgresql`                                                         |
+| `postgres.port`            | PostgreSQL port                                                                              | `5432`                                                         |
 | `redis.uri`        | Redis URI                                                                                                                | `redis://:redis@my-redis-master:6379/0`                                                         |
 | `service.port`               | PostgreSQL port (overrides `service.port`)                                                                                                                                | `5000`                                                         |
 
-  
+
 ### Tested with the following environment
 
 The following was tested on macos in minikube with the following configuration:

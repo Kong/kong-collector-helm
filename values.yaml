@@ -2,12 +2,16 @@ image:
   repository: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain
   tag: master
 
+imagePullSecrets:
+  - name: regcred
+
 kong:
   host: my-kong-kong-proxy
   port: "8001"
 
 postgres:
   host: my-psql-postgresql
+  port: 5432
 
 redis:
   uri: redis://:redis@my-redis-master:6379/0
