@@ -20,6 +20,9 @@ This chart bootstraps a Kong-Collector deployment on a [Kubernetes](http://kuber
 
 - Kubernetes 1.12+
 - Helm 2.11+ or Helm 3.0-beta3+
+- Kong Enterprise Edition
+- Postgresql
+- Redis
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
