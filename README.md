@@ -95,3 +95,12 @@ helm install collector .
 
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
+
+
+## TODO
+
+1. normalise the uri for postgres
+1. use initcontainers instead of waits
+1. set defaults/hide for discard(product) and flask app
+1. separate docker images for celery worker and beat (to hide command)
+1. use chart appVersion for docker image tag
