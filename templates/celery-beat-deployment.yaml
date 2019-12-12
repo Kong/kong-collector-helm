@@ -40,8 +40,6 @@ spec:
           value: {{ .Values.kong.host }}
         - name: KONG_PORT
           value: "{{ .Values.kong.port }}"
-        - name: PYTHONPATH
-          value: /collector
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://collector:collector@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
