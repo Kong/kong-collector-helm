@@ -24,5 +24,3 @@ helm install collector .
 - fix hardcoded admin_api ip address in kong-values.yaml
 - remove unnecessarily exposed env vars in collector deployments
 - remove license and regcred secrets
-- fix helm test
-- improve NOTES.txt

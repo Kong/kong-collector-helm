@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ include "kong-collectorapi.fullname" . }}
   annotations:
     kompose.cmd: kompose convert -c
     kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: collector
-  name: collector
 spec:
   type: {{ .Values.service.type }}
   ports:
