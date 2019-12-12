@@ -40,7 +40,7 @@ spec:
           value: "{{ .Values.kong.port }}"
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://collector:collector@{{ .Values.postgres.host }}:5432/collector"
-        image: {{ .Values.image }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: collector
         ports:
         - containerPort: 5000

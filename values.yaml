@@ -1,4 +1,6 @@
-image: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain:master
+image:
+  repository: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain
+  tag: master
 
 kong:
   host: my-kong-kong-proxy
