@@ -6,7 +6,7 @@ imagePullSecrets:
   - name: regcred
 
 kong:
-  host: my-kong-kong-proxy
+  host: my-kong-kong-admin
   port: "8001"
 
 postgres:
