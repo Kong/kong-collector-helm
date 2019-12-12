@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ include "kong-collectorapi.fullname" . }}
   annotations:
     kompose.cmd: kompose convert -c
     kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: collector
-  name: collector
 spec:
   replicas: 1
   selector:
@@ -38,8 +38,6 @@ spec:
           value: {{ .Values.kong.host }}
         - name: KONG_PORT
           value: "{{ .Values.kong.port }}"
-        - name: PYTHONPATH
-          value: /collector
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://collector:collector@{{ .Values.postgres.host }}:5432/collector"
         image: {{ .Values.image }}

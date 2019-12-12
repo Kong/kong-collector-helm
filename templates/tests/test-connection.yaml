@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "kong-collector-chart.fullname" . }}-test-connection"
+  name: "{{ include "kong-collectorapi.fullname" . }}-test-connection"
   labels:
-{{ include "kong-collector-chart.labels" . | nindent 4 }}
+{{ include "kong-collectorapi.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ include "kong-collector-chart.fullname" . }}:{{ .Values.service.port }}']
+      args:  ['{{ include "kong-collectorapi.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
