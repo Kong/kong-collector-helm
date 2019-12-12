@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -c
-    kompose.version: 1.18.0 (06a2e56)
+  annotations: {}
   creationTimestamp: null
   labels:
     io.kompose.service: celery-beat
