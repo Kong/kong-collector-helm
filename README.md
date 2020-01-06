@@ -52,13 +52,17 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |                   Parameter                   |                                                                                Description                                                                                |                            Default                            |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
-| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.0.0`                                                         |
+| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
 | `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
 | `postgres.host`            | PostgreSQL host name                                                                              | `my-psql-postgresql`                                                         |
 | `postgres.port`            | PostgreSQL port                                                                              | `5432`                                                         |
-| `redis.uri`        | Redis URI                                                                                                                | `redis://:redis@my-redis-master:6379/0`                                                         |
+| `postgres.username`            | PostgreSQL user name                                                                              | `collector`                                                         |
+| `postgres.password`            | PostgreSQL password                                                                              | `collector`                                                         |
+| `redis.host`            | Redis host name                                                                              | `my-redis-master`                                                         |
+| `redis.port`            | Redis port                                                                              | `5432`                                                         |
+| `redis.password`            | Redis password                                                                              | `redis`                                                         |
 | `service.port`               | PostgreSQL port (overrides `service.port`)                                                                                                                                | `5000`                                                         |
 
 
@@ -97,11 +101,12 @@ helm install collector .
 1. Ensure traffic is being passed to collector by checking the collector logs
 
 
-## TODO
+## IDEAS
 
-1. set defaults/hide for discard(product) and flask app
-1. separate docker images for celery worker and beat (to hide command)
+1. use chart dependencies for redis, postgresql
+1. write smoke test script for helm chart script changes
 1. use chart appVersion for docker image tag
+1. improve redis, postgresql default config
 
 
 ## Change log
