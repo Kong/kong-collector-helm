@@ -4,19 +4,19 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    io.kompose.service: celery-beat
+    app: celery-beat
   name: celery-beat
 spec:
   replicas: 1
   strategy: {}
   selector:
     matchLabels:
-        io.kompose.service: celery-beat
+        app: celery-beat
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: celery-beat
+        app: celery-beat
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
