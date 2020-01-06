@@ -7,6 +7,8 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 
 ## TL;DR;
 
+- Deploy kong enterprise [chart](https://github.com/helm/charts/tree/master/stable/kong)
+- Deploy redis and postgresql dependencies
 ```console
 $ helm install collector .
 ```
@@ -20,7 +22,7 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 
 - Kubernetes 1.12+
 - Helm 2.11+ or Helm 3.0-beta3+
-- Kong Enterprise version 0.35.3+ or later
+- Kong Enterprise version 0.35.3+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
 - Postgresql
 - Redis
 
@@ -107,6 +109,10 @@ helm install collector .
 1. write smoke test script for helm chart script changes
 1. use chart appVersion for docker image tag
 1. improve redis, postgresql default config
+1. don't run celery beat with superuser
+1. add chart name, release name as annotations
+1. improve kong setup docs
+1. drop git history or make new repo to protect secrets
 
 
 ## Change log
