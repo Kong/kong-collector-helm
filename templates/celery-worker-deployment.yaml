@@ -22,11 +22,21 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      initContainers:
+      - name: wait-for-postgres
+        image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+        imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+        env:
+        - name: COLLECTOR_PG_HOST
+          value: "{{ .Values.postgres.host }}"
+        - name: COLLECTOR_PG_PORT
+          value: "{{ .Values.postgres.port }}"
+        command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
       containers:
       - args:
         - bash
         - -c
-        - while ! </dev/tcp/{{ .Values.postgres.host }}/{{ .Values.postgres.port }}; do sleep 1; done;  celery worker -l info -A collector.scheduler.celery --concurrency=1
+        - celery worker -l info -A collector.scheduler.celery --concurrency=1
         env:
         - name: CELERY_BROKER_URL
           value: "redis://:{{ .Values.redis.password }}@{{ .Values.redis.host }}:{{ .Values.redis.port }}/0"

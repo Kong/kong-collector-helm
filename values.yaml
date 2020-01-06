@@ -7,6 +7,12 @@ image:
 imagePullSecrets:
   - name: regcred
 
+waitImage:
+  repository: busybox
+  tag: latest
+  pullPolicy: IfNotPresent
+
+
 kong:
   host: my-kong-kong-admin
   port: "8001"

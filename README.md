@@ -99,7 +99,6 @@ helm install collector .
 
 ## TODO
 
-1. use initcontainers instead of waits
 1. set defaults/hide for discard(product) and flask app
 1. separate docker images for celery worker and beat (to hide command)
 1. use chart appVersion for docker image tag
@@ -107,4 +106,5 @@ helm install collector .
 
 ## Change log
 
-- Normalized redis and postgres configurations, updated to 1.1.0
+- Normalized redis and postgres configurations
+- Added initContainers, updated to 1.1.0
