@@ -5,18 +5,18 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    io.kompose.service: collector
+    app: collector
 spec:
   replicas: 1
   selector:
     matchLabels:
-        io.kompose.service: collector
+        app: collector
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: collector
+        app: collector
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

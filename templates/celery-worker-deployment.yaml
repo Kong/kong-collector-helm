@@ -4,19 +4,19 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    io.kompose.service: celery-worker
+    app: celery-worker
   name: celery-worker
 spec:
   replicas: 1
   strategy: {}
   selector:
     matchLabels:
-        io.kompose.service: celery-worker
+        app: celery-worker
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: celery-worker
+        app: celery-worker
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
