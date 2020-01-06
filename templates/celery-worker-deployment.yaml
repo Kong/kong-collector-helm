@@ -29,7 +29,7 @@ spec:
         - while ! </dev/tcp/{{ .Values.postgres.host }}/{{ .Values.postgres.port }}; do sleep 1; done;  celery worker -l info -A collector.scheduler.celery --concurrency=1
         env:
         - name: CELERY_BROKER_URL
-          value: {{ .Values.redis.uri }}
+          value: "redis://:{{ .Values.redis.password }}@{{ .Values.redis.host }}:{{ .Values.redis.port }}/0"
         - name: COLLECTOR_DISCARD
           value: "True"
         - name: FLASK_APP
@@ -39,7 +39,7 @@ spec:
         - name: KONG_PORT
           value: "{{ .Values.kong.port }}"
         - name: SQLALCHEMY_DATABASE_URI
-          value: postgres://collector:collector@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector
+          value: "postgres://{{ .Values.postgres.username }}:{{ .Values.postgres.password }}@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: celery-worker
         resources: {}

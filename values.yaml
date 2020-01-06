@@ -1,8 +1,8 @@
 image:
-  repository: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain
-  tag: latest
-# repository: kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity
-  tag: 1.0.0
+  repository: kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity
+  tag: 1.1.0
+  # repository: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain
+  # tag: latest
 
 imagePullSecrets:
   - name: regcred
@@ -14,9 +14,13 @@ kong:
 postgres:
   host: my-psql-postgresql
   port: 5432
+  username: collector
+  password: collector
 
 redis:
-  uri: redis://:redis@my-redis-master:6379/0
+  host: my-redis-master
+  port: 6379
+  password: redis
 
 service:
   type: NodePort
