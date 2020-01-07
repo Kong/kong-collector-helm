@@ -4,24 +4,19 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    app: celery-beat
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
   name: celery-beat
 spec:
   replicas: 1
   strategy: {}
   selector:
     matchLabels:
-        app: celery-beat
-        release: "{{ .Release.Name }}"
+        {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: celery-beat
-        release: "{{ .Release.Name }}"
+        {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
