@@ -17,11 +17,13 @@ kong:
   host: my-kong-kong-admin
   port: "8001"
 
-postgres:
-  host: my-psql-postgresql
-  port: 5432
-  username: collector
-  password: collector
+postgresql:
+  enabled: true
+  postgresqlUsername: collector
+  postgresqlPassword: collector
+  postgresqlDatabase: collector
+  service:
+    port: 5432
 
 redis:
   host: my-redis-master
