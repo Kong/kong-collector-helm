@@ -12,10 +12,14 @@ version: 0.1.2
 # incremented each time you make changes to the application.
 appVersion: 1.1.0
 
-# dependencies:
-# - name: postgresql
-#   version: ~8.1.0
-#   repository: https://kubernetes-charts.storage.googleapis.com/
-#   condition: postgresql.enabled
-#   tags:
-#     - database
+dependencies:
+- name: postgresql
+  version: ~8.1.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: postgresql.enabled
+  tags:
+    - database
+- name: redis
+  version: 9.3.2
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: redis.enabled

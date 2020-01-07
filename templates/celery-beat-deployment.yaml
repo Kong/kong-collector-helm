@@ -34,7 +34,7 @@ spec:
         - celery beat -l info -A collector.scheduler.celery
         env:
         - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ .Values.redis.host }}:{{ .Values.redis.port }}/0"
+          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         - name: COLLECTOR_DISCARD
           value: "True"
         - name: FLASK_APP

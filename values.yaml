@@ -26,7 +26,7 @@ postgresql:
     port: 5432
 
 redis:
-  host: my-redis-master
+  enabled: true
   port: 6379
   password: redis
 

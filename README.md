@@ -7,8 +7,6 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 
 ## TL;DR;
 
-- Deploy kong enterprise [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
-- Deploy redis and postgresql dependencies
 ```console
 $ helm install collector .
 ```
@@ -23,11 +21,21 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 - Kubernetes 1.12+
 - Helm 2.11+ or Helm 3.0-beta3+
 - Kong Enterprise version 0.35.3+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
-- Postgresql
-- Redis
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
+
+- Add docker registry secret eg. `kong-docker-kong-brain-immunity-base.bintray.io`
+```console
+kubectl create secret docker-registry regcred \
+    --docker-server=REGISTRY_URI \
+    --docker-username=USERNAME \
+    --docker-password=APIKEY
+```
+
+- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
+- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
+- Create kong service and route then add a collector plugin pointing at the collector host and port.
 
 ```console
 $ helm install my-release .
@@ -62,7 +70,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
 | `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
 | `postgresql.postgresqlPassword`            | PostgreSQL password                                                                              | `collector`                                                         |
-| `redis.host`            | Redis host name                                                                              | `my-redis-master`                                                         |
 | `redis.port`            | Redis port                                                                              | `5432`                                                         |
 | `redis.password`            | Redis password                                                                              | `redis`                                                         |
 
@@ -74,14 +81,6 @@ The following was tested on macos in minikube with the following configuration:
 minikube start --vm-driver hyperkit --memory='6128mb' --cpus=4
 ```
 ```sh
-helm install my-redis \
-  --set password=redis \
-    stable/redis
-
-helm install collector-postgresql \
-  --set postgresqlPassword=collector,postgresqlUsername=collector,postgresqlDatabase=collector \
-    stable/postgresql
-
 helm install k-psql \
   --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
     stable/postgresql
@@ -97,6 +96,8 @@ helm install my-kong stable/kong -f kong-values.yaml
 
 helm install collector .
 ```
+
+*Testing instructions*
 
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
@@ -115,3 +116,4 @@ helm install collector .
 - Normalized redis and postgres configurations
 - Added initContainers
 - Bump collector to 1.1.0
+- Use helm dependencies
