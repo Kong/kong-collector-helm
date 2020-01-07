@@ -58,14 +58,13 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
 | `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
-| `postgres.host`            | PostgreSQL host name                                                                              | `my-psql-postgresql`                                                         |
-| `postgres.port`            | PostgreSQL port                                                                              | `5432`                                                         |
-| `postgres.username`            | PostgreSQL user name                                                                              | `collector`                                                         |
-| `postgres.password`            | PostgreSQL password                                                                              | `collector`                                                         |
+| `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
+| `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
+| `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
+| `postgresql.postgresqlPassword`            | PostgreSQL password                                                                              | `collector`                                                         |
 | `redis.host`            | Redis host name                                                                              | `my-redis-master`                                                         |
 | `redis.port`            | Redis port                                                                              | `5432`                                                         |
 | `redis.password`            | Redis password                                                                              | `redis`                                                         |
-| `service.port`               | PostgreSQL port (overrides `service.port`)                                                                                                                                | `5000`                                                         |
 
 
 ### Tested with the following environment
@@ -103,17 +102,16 @@ helm install collector .
 1. Ensure traffic is being passed to collector by checking the collector logs
 
 
-## IDEAS
+## Changelog
 
-1. use chart dependencies for redis, postgresql
-1. write smoke test script for helm chart script changes
-1. use chart appVersion for docker image tag
-1. improve redis default config
-1. improve kong setup docs
-1. drop git history or make new repo to protect secrets
+### 0.1.2
 
+> PR [#1](https://github.com/Kong/kong-collector-helm/pull/1)
+#### Improvements
 
-## Change log
-
+- Labels on all resources have been updated to adhere to the Helm Chart
+  guideline here:
+  https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository
 - Normalized redis and postgres configurations
-- Added initContainers, updated to 1.1.0
+- Added initContainers
+- Bump collector to 1.1.0
