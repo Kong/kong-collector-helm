@@ -5,23 +5,18 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    app: "{{ template "kong-collectorapi.name" . }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-        app: "{{ template "kong-collectorapi.name" . }}"
-        release: "{{ .Release.Name }}"
+        {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: "{{ template "kong-collectorapi.name" . }}"
-        release: "{{ .Release.Name }}"
+        {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

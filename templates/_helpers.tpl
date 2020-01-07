@@ -36,6 +36,14 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "kong-collectorapi.metaLabels" -}}
+apps.kubernetes.io/app: {{ template "kong-collectorapi.name" . }}
+helm.sh/chart: {{ template "kong-collectorapi.chart" . }}
+app.kubernetes.io/instance: "{{ .Release.Name }}"
+app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end -}}
+
 {{/*
 Common labels
 */}}
