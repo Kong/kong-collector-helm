@@ -6,11 +6,15 @@ metadata:
   creationTimestamp: null
   labels:
     app: collector
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
   selector:
     app: collector
+    release: "{{ .Release.Name }}"
 status:
   loadBalancer: {}

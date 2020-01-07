@@ -5,6 +5,9 @@ metadata:
   creationTimestamp: null
   labels:
     app: celery-beat
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   name: celery-beat
 spec:
   replicas: 1
@@ -12,11 +15,13 @@ spec:
   selector:
     matchLabels:
         app: celery-beat
+        release: "{{ .Release.Name }}"
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: celery-beat
+        release: "{{ .Release.Name }}"
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

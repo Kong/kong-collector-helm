@@ -6,11 +6,15 @@ metadata:
   creationTimestamp: null
   labels:
     app: collector
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
         app: collector
+        release: "{{ .Release.Name }}"
   strategy: {}
   template:
     metadata:
