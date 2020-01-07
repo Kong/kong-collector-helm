@@ -5,18 +5,21 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: queue
   name: celery-worker
 spec:
   replicas: 1
   strategy: {}
   selector:
     matchLabels:
-        {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
+      {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
+      app.kubernetes.io/component: queue
   template:
     metadata:
       creationTimestamp: null
       labels:
         {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: queue
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

@@ -6,11 +6,13 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
   selector:
     {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 status:
   loadBalancer: {}
