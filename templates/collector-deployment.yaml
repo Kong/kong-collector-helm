@@ -5,31 +5,36 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    io.kompose.service: collector
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   replicas: 1
   selector:
     matchLabels:
-        io.kompose.service: collector
+      {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: collector
+        {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      initContainers:
+      {{- include "kong-collectorapi.wait-for-db" . | nindent 6 }}
       containers:
       - args:
         - bash
         - -c
-        - while ! </dev/tcp/{{ .Values.postgres.host }}/{{ .Values.postgres.port }}; do sleep 1; done; flask db upgrade && /collector/run-collector.sh
+        - /collector/run-collector.sh
         env:
         - name: CELERY_BROKER_URL
-          value: {{ .Values.redis.uri }}
+          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         - name: COLLECTOR_DISCARD
           value: "True"
         - name: FLASK_APP
@@ -39,7 +44,7 @@ spec:
         - name: KONG_PORT
           value: "{{ .Values.kong.port }}"
         - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://collector:collector@{{ .Values.postgres.host }}:{{ .Values.postgres.port }}/collector"
+          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: collector
         ports:

@@ -5,12 +5,14 @@ metadata:
   annotations: {}
   creationTimestamp: null
   labels:
-    io.kompose.service: collector
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
   selector:
-    io.kompose.service: collector
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app
 status:
   loadBalancer: {}

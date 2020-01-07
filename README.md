@@ -20,12 +20,22 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 
 - Kubernetes 1.12+
 - Helm 2.11+ or Helm 3.0-beta3+
-- Kong Enterprise version 0.35.3+ or later
-- Postgresql
-- Redis
+- Kong Enterprise version 0.35.3+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
+
+- Add docker registry secret eg. `kong-docker-kong-brain-immunity-base.bintray.io`
+```console
+kubectl create secret docker-registry regcred \
+    --docker-server=REGISTRY_URI \
+    --docker-username=USERNAME \
+    --docker-password=APIKEY
+```
+
+- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
+- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
+- Add collector plugin pointing at the collector host and port initialized in the following step.
 
 ```console
 $ helm install my-release .
@@ -52,14 +62,16 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |                   Parameter                   |                                                                                Description                                                                                |                            Default                            |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
-| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.0.0`                                                         |
+| `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
 | `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
-| `postgres.host`            | PostgreSQL host name                                                                              | `my-psql-postgresql`                                                         |
-| `postgres.port`            | PostgreSQL port                                                                              | `5432`                                                         |
-| `redis.uri`        | Redis URI                                                                                                                | `redis://:redis@my-redis-master:6379/0`                                                         |
-| `service.port`               | PostgreSQL port (overrides `service.port`)                                                                                                                                | `5000`                                                         |
+| `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
+| `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
+| `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
+| `postgresql.postgresqlPassword`            | PostgreSQL password                                                                              | `collector`                                                         |
+| `redis.port`            | Redis port                                                                              | `5432`                                                         |
+| `redis.password`            | Redis password                                                                              | `redis`                                                         |
 
 
 ### Tested with the following environment
@@ -69,38 +81,41 @@ The following was tested on macos in minikube with the following configuration:
 minikube start --vm-driver hyperkit --memory='6128mb' --cpus=4
 ```
 ```sh
-helm install my-redis \
-  --set password=redis \
-    stable/redis
-
-helm install my-psql \
-  --set postgresqlPassword=collector,postgresqlUsername=collector,postgresqlDatabase=collector \
-    stable/postgresql
-
 helm install k-psql \
   --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
     stable/postgresql
 
 kubectl create secret generic kong-enterprise-license --from-file=./license 
 
+
+helm install my-kong stable/kong -f kong-values.yaml
+
 kubectl create secret docker-registry regcred \
     --docker-server=REGISTRY_URI \
     --docker-username=USERNAME \
     --docker-password=APIKEY
 
-helm install my-kong stable/kong -f kong-values.yaml
-
 helm install collector .
 ```
+
+*Testing instructions*
 
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
 
-## TODO
+## Changelog
 
-1. normalise the uri for postgres
-1. use initcontainers instead of waits
-1. set defaults/hide for discard(product) and flask app
-1. separate docker images for celery worker and beat (to hide command)
-1. use chart appVersion for docker image tag
+### 0.1.2
+
+> PR [#1](https://github.com/Kong/kong-collector-helm/pull/1)
+#### Improvements
+
+- Labels on all resources have been updated to adhere to the Helm Chart
+  guideline here:
+  https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository
+- Normalized redis and postgres configurations
+- Added initContainers
+- Bump collector to 1.1.0
+- Use helm dependencies
+- Add migration job for flask db upgrade
