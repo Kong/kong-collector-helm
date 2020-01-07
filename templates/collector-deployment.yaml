@@ -31,7 +31,7 @@ spec:
       - args:
         - bash
         - -c
-        - flask db upgrade && /collector/run-collector.sh
+        - /collector/run-collector.sh
         env:
         - name: CELERY_BROKER_URL
           value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"

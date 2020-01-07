@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "kong-collectorapi.fullname" . }}-init-migrations
+  labels:
+    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    app.kubernetes.io/component: init-migrations
+spec:
+  template:
+    metadata:
+      name: {{ template "kong-collectorapi.name" . }}-init-migrations
+      labels:
+        {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
+        app.kubernetes.io/component: init-migrations
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+      {{- include "kong-collectorapi.wait-for-db" . | nindent 6 }}
+      containers:
+      - name: {{ template "kong-collectorapi.name" . }}-migrations
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: CELERY_BROKER_URL
+          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
+        - name: FLASK_APP
+          value: /collector
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
+        command: [ "/bin/sh", "-c", "flask db upgrade" ]
+      restartPolicy: OnFailure
