@@ -35,7 +35,7 @@ kubectl create secret docker-registry regcred \
 
 - Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
 - Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
-- Create kong service and route then add a collector plugin pointing at the collector host and port.
+- Add collector plugin pointing at the collector host and port initialized in the following step.
 
 ```console
 $ helm install my-release .
@@ -87,12 +87,13 @@ helm install k-psql \
 
 kubectl create secret generic kong-enterprise-license --from-file=./license 
 
+
+helm install my-kong stable/kong -f kong-values.yaml
+
 kubectl create secret docker-registry regcred \
     --docker-server=REGISTRY_URI \
     --docker-username=USERNAME \
     --docker-password=APIKEY
-
-helm install my-kong stable/kong -f kong-values.yaml
 
 helm install collector .
 ```
@@ -117,3 +118,4 @@ helm install collector .
 - Added initContainers
 - Bump collector to 1.1.0
 - Use helm dependencies
+- Add migration job for flask db upgrade

@@ -1,15 +1,10 @@
 apiVersion: v2
 name: kong-collectorapi
 description: Kong Brain and Kong Immunity help automate the entire API and service development life cycle. By automating processes for configuration, traffic analysis and the creation of documentation, Kong Brain and Kong Immunity help organizations improve efficiency, governance, reliability and security.
-
+home: https://konghq.com/
+icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
 type: application
-
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
 version: 0.1.2
-
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
 appVersion: 1.1.0
 
 dependencies:
