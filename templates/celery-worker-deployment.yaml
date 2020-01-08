@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: {{ include "kong-collectorapi.fullname" . }}-celery-worker
   annotations: {}
   creationTimestamp: null
   labels:
     {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: queue
-  name: celery-worker
 spec:
   replicas: 1
   strategy: {}

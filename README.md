@@ -8,7 +8,7 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 ## TL;DR;
 
 ```console
-$ helm install my-release .
+$ helm install my-release . --set kong.env.pg_host=my-release-kongdb,kong.env.admin_api_uri=$(minikube ip):32001
 ```
 
 ## Introduction
@@ -38,20 +38,18 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
 ```
+- Install helm chart
 
-- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise) with postgresql with an additional env var: `KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}`
 ```console
+$ helm install my-release . --set kong.env.pg_host=my-release-kongdb,kong.env.admin_api_uri=$(minikube ip):32001
 ```
-- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
-- Start collector with its redis and postgresql dependencies
-```console
-$ helm install my-release .
-```
+
 The command deploys Kong-Collector on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
-- Using the kong admin API create a collector plugin to connect kong to the collector
+- Open $(minikube ip):32080 in a web browser to use kong manager
+- Using the kong manager or admin API create a collector plugin to connect kong to the collector
 ```console
-$ curl -s -X POST <KONG-ADMIN-HOST>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
+$ curl -s -X POST <NODE_IP>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
   -d name=collector \
   -d config.host=<COLLECTOR-HOST> \
   -d config.port=5000 \
