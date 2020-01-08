@@ -21,6 +21,7 @@ waitImage:
 
 # Specify Kong admin and proxy services configurations
 admin:
+  enabled: true
   # If you want to specify annotations for the admin service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
   annotations: {}

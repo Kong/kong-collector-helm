@@ -30,18 +30,17 @@ To install the chart with the release name `my-release`:
 $ kubectl create secret generic kong-enterprise-license --from-file=./license
 $ kubectl create secret docker-registry bintray-kong \
     --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
-    --docker-username=USERNAME \
-    --docker-password=APIKEY
+    --docker-username=$BINTRAY_USER \
+    --docker-password=$BINTRAY_KEY
 
 $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
-    --docker-username=USERNAME \
-    --docker-password=APIKEY
+    --docker-username=$BINTRAY_USER \
+    --docker-password=$BINTRAY_KEY
 ```
 
 - Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise) with postgresql with an additional env var: `KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}`
 ```console
-$ helm install my-kong stable/kong -f kong-values.yaml --set env.pg_host=my-kong-postgresql,env.admin_api_uri=$(minikube ip):32001 --version 0.27.2
 ```
 - Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
 - Start collector with its redis and postgresql dependencies
