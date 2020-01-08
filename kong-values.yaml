@@ -12,7 +12,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   pullSecrets:
-    - regcred
+    - bintray-kong
 
 waitImage:
   repository: busybox

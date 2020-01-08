@@ -6,7 +6,7 @@ image:
   # tag: latest
 
 imagePullSecrets:
-  - name: regcred
+  - name: bintray-kong-brain-immunity
 
 waitImage:
   repository: busybox

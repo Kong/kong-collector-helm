@@ -8,7 +8,13 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 ## TL;DR;
 
 ```console
-$ helm install collector .
+helm install k-psql \
+  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
+    stable/postgresql
+
+helm install my-kong stable/kong -f kong-values.yaml
+
+$ helm install my-release .
 ```
 
 ## Introduction
@@ -25,23 +31,47 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 
-- Add docker registry secret eg. `kong-docker-kong-brain-immunity-base.bintray.io`
+- Add secrets for enterprise and brain-immunity
 ```console
-kubectl create secret docker-registry regcred \
-    --docker-server=REGISTRY_URI \
+$ kubectl create secret generic kong-enterprise-license --from-file=./license
+$ kubectl create secret docker-registry bintray-kong \
+    --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
+    --docker-username=USERNAME \
+    --docker-password=APIKEY
+
+$ kubectl create secret docker-registry bintray-kong-brain-immunity \
+    --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
     --docker-username=USERNAME \
     --docker-password=APIKEY
 ```
 
-- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
-- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
-- Add collector plugin pointing at the collector host and port initialized in the following step.
+- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise) with postgresql
+```console
+$ helm install k-psql \
+  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
+    stable/postgresql
 
+$ helm install my-kong stable/kong -f kong-values.yaml
+```
+- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
+- Start collector with its redis and postgresql dependencies
 ```console
 $ helm install my-release .
 ```
-
 The command deploys Kong-Collector on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
+
+- Using the kong admin API create a collector plugin to connect kong to the collector
+```console
+$ curl -s -X POST <KONG-ADMIN-HOST>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
+  -d name=collector \
+  -d config.host=<COLLECTOR-HOST> \
+  -d config.port=5000 \
+  -d config.https=false \
+  -d config.log_bodies=true \
+  -d config.queue_size=100 \
+  -d config.flush_timeout=1 \
+  -d config.connection_timeout=300
+```
 
 > **Tip**: List all releases using `helm list`
 
@@ -63,7 +93,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
-| `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
+| `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: bintray-kong-brain-immunity` (does not add image pull secrets to deployed pods)                                                         |
 | `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
 | `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
 | `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
@@ -80,23 +110,6 @@ The following was tested on macos in minikube with the following configuration:
 ```sh
 minikube start --vm-driver hyperkit --memory='6128mb' --cpus=4
 ```
-```sh
-helm install k-psql \
-  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
-    stable/postgresql
-
-kubectl create secret generic kong-enterprise-license --from-file=./license 
-
-
-helm install my-kong stable/kong -f kong-values.yaml
-
-kubectl create secret docker-registry regcred \
-    --docker-server=REGISTRY_URI \
-    --docker-username=USERNAME \
-    --docker-password=APIKEY
-
-helm install collector .
-```
 
 *Testing instructions*
 
@@ -105,6 +118,12 @@ helm install collector .
 
 
 ## Changelog
+### 0.1.3
+
+> PR [#2](https://github.com/Kong/kong-collector-helm/pull/2)
+#### Improvements
+
+- Add kong-ee deploy steps to documentation
 
 ### 0.1.2
 
