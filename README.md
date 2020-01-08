@@ -8,12 +8,6 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 ## TL;DR;
 
 ```console
-helm install k-psql \
-  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
-    stable/postgresql
-
-helm install my-kong stable/kong -f kong-values.yaml
-
 $ helm install my-release .
 ```
 
@@ -45,13 +39,9 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-password=APIKEY
 ```
 
-- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise) with postgresql
+- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise) with postgresql with an additional env var: `KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}`
 ```console
-$ helm install k-psql \
-  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
-    stable/postgresql
-
-$ helm install my-kong stable/kong -f kong-values.yaml
+$ helm install my-kong stable/kong -f kong-values.yaml --set env.pg_host=my-kong-postgresql,env.admin_api_uri=$(minikube ip):32001 --version 0.27.2
 ```
 - Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
 - Start collector with its redis and postgresql dependencies
@@ -107,12 +97,9 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 ### Tested with the following environment
 
 The following was tested on macos in minikube with the following configuration:
-```sh
-minikube start --vm-driver hyperkit --memory='6128mb' --cpus=4
-```
 
-*Testing instructions*
-
+1. Start minikube `minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4`
+1. Create kong-ee instance and test connectivity
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
