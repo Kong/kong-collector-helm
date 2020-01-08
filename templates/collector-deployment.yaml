@@ -40,9 +40,9 @@ spec:
         - name: FLASK_APP
           value: /collector
         - name: KONG_HOST
-          value: {{ .Values.kong.host }}
+          value: "{{ template "kong-collectorapi.kong-admin.fullname" . }}"
         - name: KONG_PORT
-          value: "{{ .Values.kong.port }}"
+          value: "{{ .Values.kong.admin.servicePort }}"
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

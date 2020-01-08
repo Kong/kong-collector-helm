@@ -81,8 +81,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: bintray-kong-brain-immunity` (does not add image pull secrets to deployed pods)                                                         |
-| `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
-| `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
 | `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
 | `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
 | `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
@@ -96,7 +94,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 The following was tested on macos in minikube with the following configuration:
 
 1. Start minikube `minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4`
-1. Create kong-ee instance and test connectivity
+1. Install chart then `open http://$(minikube ip):32080`
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
@@ -107,7 +105,9 @@ The following was tested on macos in minikube with the following configuration:
 > PR [#2](https://github.com/Kong/kong-collector-helm/pull/2)
 #### Improvements
 
-- Add kong-ee deploy steps to documentation
+- Add migration job
+- Move kong to sub-chart
+- Remove duplicate values
 
 ### 0.1.2
 

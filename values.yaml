@@ -40,8 +40,6 @@ kong:
     tls:
       enabled: false
     type: NodePort
-  portal:
-    enabled: false
   env:
     database: postgres
     pg_host: my-release-kongdb
@@ -58,8 +56,6 @@ kong:
     nameOverride: kongdb
     service:
       port: 5432
-  host: my-kong-kong-admin
-  port: "8001"
 
 postgresql:
   enabled: true
