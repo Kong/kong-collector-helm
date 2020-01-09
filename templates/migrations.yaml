@@ -12,6 +12,9 @@ spec:
       labels:
         {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
         app.kubernetes.io/component: init-migrations
+      annotations:
+        helm.sh/hook: "post-install,post-upgrade"
+        helm.sh/hook-delete-policy: "hook-succeeded,before-hook-creation"
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
