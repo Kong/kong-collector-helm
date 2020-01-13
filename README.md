@@ -2,14 +2,7 @@
 
 [Kong-Collector](https://konghq.com/products/kong-enterprise/kong-immunity) is an application which enables the use of Kong Brain and Kong Immunity.
 
-Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using a Collector App and a Collector Plugin to communicate with Kong Enterprise.
-
-
-## TL;DR;
-
-```console
-$ helm install my-release . --set kong.env.pg_host=my-release-kongdb,kong.env.admin_api_uri=$(minikube ip):32001
-```
+Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using a Collector API and a Collector Plugin to communicate with Kong Enterprise.
 
 ## Introduction
 
@@ -38,16 +31,22 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
 ```
-- Install helm chart
+- Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the kong admin api
 
 ```console
-$ helm install my-release . --set kong.env.pg_host=my-release-kongdb,kong.env.admin_api_uri=$(minikube ip):32001
+$ helm install my-kong stable/kong -f kong-values.yaml --set env.pg_host=my-kong-kongdb,env.admin_api_uri=$(minikube ip):32001 --version 0.36.1
 ```
 
-The command deploys Kong-Collector on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
+- Set up collector, overriding kong admin host and port to allow collector to push swagger specs to kong
 
-- Open $(minikube ip):32080 in a web browser to use kong manager
-- Using the kong manager or admin API create a collector plugin to connect kong to the collector
+```console
+$ helm install my-collector . --set kongAdminHost=my-kong-kong-admin,kongAdminServicePort=8001
+```
+
+- Add a "Collector Plugin" to kong, using the Kong Admin API or Kong Manager GUI
+
+`open http://$(minikube ip):32002` in a web browser to add plugins with Kong Manager
+*OR*
 ```console
 $ curl -s -X POST <NODE_IP>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
   -d name=collector \
@@ -74,13 +73,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Parameters
 
-The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
+The following tables lists the configurable parameters of the PostgreSQL chart and their default .Values.
 
 |                   Parameter                   |                                                                                Description                                                                                |                            Default                            |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: bintray-kong-brain-immunity` (does not add image pull secrets to deployed pods)                                                         |
+| `testendpoints.enabled`                           | Creates a testing service                                                                                                                                                | `false`                                                         |
+| `kongAdminHost`                           | Hostname where Kong Admin API can be found                                                                                                                                                 | `my-kong-kong-admin`                                                         |
+| `kongAdminPort`                           | Port where Kong Admin API can be found                                                                                                                                                | `8001`                                                         |
+| `nodePort`                           | Port to access Collector API from outside the cluster                                                                                                                                                | `31555`                                                         |
 | `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
 | `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
 | `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
@@ -94,7 +97,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 The following was tested on macos in minikube with the following configuration:
 
 1. Start minikube `minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4`
-1. Install chart then `open http://$(minikube ip):32080`
+1. Install chart then `open http://$(minikube ip):32002`
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
@@ -106,7 +109,6 @@ The following was tested on macos in minikube with the following configuration:
 #### Improvements
 
 - Add migration job
-- Move kong to sub-chart
 - Remove duplicate values
 
 ### 0.1.2
