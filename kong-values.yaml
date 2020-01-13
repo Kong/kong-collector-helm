@@ -2,7 +2,7 @@ image:
   repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
   tag: latest
   pullSecrets:
-  - bintray-kong
+  - kong-enterprise-docker
 enterprise:
   enabled: true
   license_secret: kong-enterprise-license

@@ -18,32 +18,30 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 
-1. Add secrets for enterprise and brain-immunity
-```console
-$ kubectl create secret generic kong-enterprise-license --from-file=./license
-$ kubectl create secret docker-registry bintray-kong \
-    --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
-    --docker-username=$BINTRAY_USER \
-    --docker-password=$BINTRAY_KEY
+1. [Add Kong Enterprise license secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-license)
 
+2. [Add Kong Enterprise registry secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-docker-registry-access) 
+
+3. Add Kong Brain and Immunity registry secret 
+```console
 $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
 ```
-2. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
+4. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
 
 ```console
 $ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.pg_host=my-kong-kongdb,env.admin_api_uri=$(minikube ip):32001
 ```
 
-3. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
+5. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
 
 ```console
 $ helm install my-release . --set kongAdminHost=my-kong-kong-admin,kongAdminServicePort=8001
 ```
 
-4. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager GUI
+6. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager GUI
 
 ```console
 $ open http://$(minikube ip):32002
@@ -82,7 +80,6 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
 | `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: bintray-kong-brain-immunity` (does not add image pull secrets to deployed pods)                                                         |
-| `testendpoints.enabled`                           | Creates a testing service                                                                                                                                                | `false`                                                         |
 | `kongAdminHost`                           | Hostname where Kong Admin API can be found                                                                                                                                                 | `my-kong-kong-admin`                                                         |
 | `kongAdminPort`                           | Port where Kong Admin API can be found                                                                                                                                                | `8001`                                                         |
 | `nodePort`                           | Port to access Collector API from outside the cluster                                                                                                                                                | `31555`                                                         |
@@ -92,6 +89,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresql.postgresqlPassword`            | PostgreSQL password                                                                              | `collector`                                                         |
 | `redis.port`            | Redis port                                                                              | `5432`                                                         |
 | `redis.password`            | Redis password                                                                              | `redis`                                                         |
+| `testendpoints.enabled`                           | Creates a testing service                                                                                                                                                | `false`                                                         |
 
 
 ### Tested with the following environment
