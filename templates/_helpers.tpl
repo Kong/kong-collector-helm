@@ -85,11 +85,9 @@ Create the name of the service account to use
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
   env:
-  {{- if .Values.postgresql.enabled }}
   - name: COLLECTOR_PG_HOST
     value: {{ template "kong-collectorapi.postgresql.fullname" . }}
   - name: COLLECTOR_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
   command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
-{{- end -}}
 {{- end -}}

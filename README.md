@@ -12,13 +12,13 @@ This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-
 ## Prerequisites
 
 - Kubernetes 1.12+
-- Helm 2.11+ or Helm 3.0-beta3+
-- Kong Enterprise version 0.35.3+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
+- Helm 3.0+
+- Kong Enterprise version 0.36.1+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 
-- Add secrets for enterprise and brain-immunity
+1. Add secrets for enterprise and brain-immunity
 ```console
 $ kubectl create secret generic kong-enterprise-license --from-file=./license
 $ kubectl create secret docker-registry bintray-kong \
@@ -31,21 +31,23 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
 ```
-- Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the kong admin api
+2. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
 
 ```console
-$ helm install my-kong stable/kong -f kong-values.yaml --set env.pg_host=my-kong-kongdb,env.admin_api_uri=$(minikube ip):32001 --version 0.36.1
+$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.pg_host=my-kong-kongdb,env.admin_api_uri=$(minikube ip):32001
 ```
 
-- Set up collector, overriding kong admin host and port to allow collector to push swagger specs to kong
+3. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
 
 ```console
-$ helm install my-collector . --set kongAdminHost=my-kong-kong-admin,kongAdminServicePort=8001
+$ helm install my-release . --set kongAdminHost=my-kong-kong-admin,kongAdminServicePort=8001
 ```
 
-- Add a "Collector Plugin" to kong, using the Kong Admin API or Kong Manager GUI
+4. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager GUI
 
-`open http://$(minikube ip):32002` in a web browser to add plugins with Kong Manager
+```console
+$ open http://$(minikube ip):32002
+```
 *OR*
 ```console
 $ curl -s -X POST <NODE_IP>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
@@ -97,7 +99,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 The following was tested on macos in minikube with the following configuration:
 
 1. Start minikube `minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4`
-1. Install chart then `open http://$(minikube ip):32002`
+1. Install both kong and collector charts then `open http://$(minikube ip):32002`
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
