@@ -6,7 +6,7 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 
 ## Introduction
 
-This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-x/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 
 ## Prerequisites
@@ -59,7 +59,7 @@ $ curl -s -X POST <NODE_IP>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
   -d config.connection_timeout=300
 ```
 
-> **Tip**: List all releases using `helm list`
+> 7. Follow the [Kong Brain & Immunity Documentation](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/)
 
 ## Uninstalling the Chart
 

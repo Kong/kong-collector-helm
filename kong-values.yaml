@@ -8,10 +8,12 @@ enterprise:
   license_secret: kong-enterprise-license
 ingressController.enabled: false
 proxy:
+  http:
+    enabled: true
+    nodePort: 32000
+  tls:
+    enabled: false
   type: NodePort
-  servicePort: 8444
-  containerPort: 8444
-  nodePort: 32000
 admin:
   enabled: true
   useTLS: false
