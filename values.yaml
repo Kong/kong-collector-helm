@@ -1,6 +1,6 @@
 image:
   repository: kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity
-  tag: 1.0.0
+  tag: 1.1.0
   pullPolicy: IfNotPresent
   # repository: kong-docker-kong-brain-internal-builds.bintray.io/kong-brain
   # tag: latest
