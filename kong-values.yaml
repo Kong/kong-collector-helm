@@ -6,7 +6,8 @@ image:
 enterprise:
   enabled: true
   license_secret: kong-enterprise-license
-ingressController.enabled: false
+ingressController:
+  enabled: false
 proxy:
   http:
     enabled: true

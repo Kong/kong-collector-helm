@@ -108,7 +108,8 @@ The following was tested on macos in minikube with the following configuration:
 > PR [#2](https://github.com/Kong/kong-collector-helm/pull/2)
 #### Improvements
 
-- Add migration job
+- Pinned versions
+- Added testing features
 - Remove duplicate values
 
 ### 0.1.2
