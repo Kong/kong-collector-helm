@@ -110,6 +110,7 @@ The following was tested on macos in minikube with the following configuration:
 
 - Pinned versions
 - Added testing features
+- Added wait for kong
 - Remove duplicate values
 
 ### 0.1.2

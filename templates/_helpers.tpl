@@ -91,3 +91,13 @@ Create the name of the service account to use
     value: "{{ .Values.postgresql.service.port }}"
   command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}
+
+{{- define "kong-collectorapi.wait-for-kong" -}}
+- name: wait-for-kong
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+  env:
+  - name: KONG_ADMIN_HOST
+    value: "{{ .Values.kongAdminHost }}"
+  command: [ "/bin/sh", "-c", "until nslookup $KONG_ADMIN_HOST; do echo waiting for $KONG_ADMIN_HOST; sleep 2; done;" ]
+{{- end -}}
