@@ -39,6 +39,8 @@ spec:
           value: "True"
         - name: FLASK_APP
           value: /collector
+        - name: KONG_PROTOCOL
+          value: "{{ .Values.kongAdminProtocol }}"
         - name: KONG_HOST
           value: "{{ .Values.kongAdminHost }}"
         - name: KONG_PORT
