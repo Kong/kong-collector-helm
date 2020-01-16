@@ -32,7 +32,6 @@ manager:
   type: NodePort
 env:
   database: postgres
-  pg_host: my-kong-kongdb
   pg_user: kong
   pg_password: kong
   pg_port: 5432

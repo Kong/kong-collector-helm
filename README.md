@@ -32,7 +32,7 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
 4. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
 
 ```console
-$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.pg_host=my-kong-kongdb,env.admin_api_uri=$(minikube ip):32001
+$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
 ```
 
 5. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
