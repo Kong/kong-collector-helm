@@ -11,6 +11,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.nodePort))) }}
+      nodePort: {{ .Values.nodePort }}
+      {{- end }}
   selector:
     {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app

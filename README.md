@@ -2,48 +2,64 @@
 
 [Kong-Collector](https://konghq.com/products/kong-enterprise/kong-immunity) is an application which enables the use of Kong Brain and Kong Immunity.
 
-Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using a Collector App and a Collector Plugin to communicate with Kong Enterprise.
-
-
-## TL;DR;
-
-```console
-$ helm install collector .
-```
+Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using a Collector API and a Collector Plugin to communicate with Kong Enterprise.
 
 ## Introduction
 
-This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/1.3-x/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 
 ## Prerequisites
 
 - Kubernetes 1.12+
-- Helm 2.11+ or Helm 3.0-beta3+
-- Kong Enterprise version 0.35.3+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
+- Helm 3.0+
+- Kong Enterprise version 0.36.1+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
 
-- Add docker registry secret eg. `kong-docker-kong-brain-immunity-base.bintray.io`
+1. [Add Kong Enterprise license secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-license)
+
+2. [Add Kong Enterprise registry secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-docker-registry-access) 
+
+3. Add Kong Brain and Immunity registry secret 
 ```console
-kubectl create secret docker-registry regcred \
-    --docker-server=REGISTRY_URI \
-    --docker-username=USERNAME \
-    --docker-password=APIKEY
+$ kubectl create secret docker-registry bintray-kong-brain-immunity \
+    --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
+    --docker-username=$BINTRAY_USER \
+    --docker-password=$BINTRAY_KEY
+```
+4. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
+
+```console
+$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
 ```
 
-- Deploy kong-ee [chart](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise)
-- Ensure kong admin API is available at the kong.host:kong.port specified in values.yaml
-- Add collector plugin pointing at the collector host and port initialized in the following step.
+5. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
 
 ```console
-$ helm install my-release .
+$ helm install my-release . --set kongAdminHost=my-kong-kong-admin,kongAdminServicePort=8001
 ```
 
-The command deploys Kong-Collector on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
+6. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager GUI
 
-> **Tip**: List all releases using `helm list`
+```console
+$ open http://$(minikube ip):32002
+```
+*OR*
+```console
+$ curl -s -X POST <NODE_IP>:<KONG-ADMIN-PORT>/<WORKSPACE>/plugins \
+  -d name=collector \
+  -d config.host=<COLLECTOR-HOST> \
+  -d config.port=5000 \
+  -d config.https=false \
+  -d config.log_bodies=true \
+  -d config.queue_size=100 \
+  -d config.flush_timeout=1 \
+  -d config.connection_timeout=300
+```
+
+> 7. Follow the [Kong Brain & Immunity Documentation](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/)
 
 ## Uninstalling the Chart
 
@@ -57,54 +73,45 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Parameters
 
-The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
+The following tables lists the configurable parameters of the PostgreSQL chart and their default .Values.
 
 |                   Parameter                   |                                                                                Description                                                                                |                            Default                            |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | `image.repository`                        | Kong-Collector Image repository                                                                                                                                              | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                                                         |
 | `image.tag`                        | Kong-Collector Image tag                                                                                                                                              | `1.1.0`                                                         |
-| `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: regcred` (does not add image pull secrets to deployed pods)                                                         |
-| `kong.host`        | Kong admin api host name                                                                                                                     | `my-kong-kong-admin`                                                         |
-| `kong.port`        | Kong port                                                                                                                    | `"8001"`                                                         |
+| `imagePullSecrets`                           | Specify Image pull secrets                                                                                                                                                | `- name: bintray-kong-brain-immunity` (does not add image pull secrets to deployed pods)                                                         |
+| `kongAdminHost`                           | Hostname where Kong Admin API can be found                                                                                                                                                 | `my-kong-kong-admin`                                                         |
+| `kongAdminPort`                           | Port where Kong Admin API can be found                                                                                                                                                | `8001`                                                         |
+| `nodePort`                           | Port to access Collector API from outside the cluster                                                                                                                                                | `31555`                                                         |
 | `postgresql.postgresqlDatabase`            | PostgreSQL dataname name                                                                              | `collector`                                                         |
 | `postgresql.service.port`            | PostgreSQL port                                                                              | `5432`                                                         |
 | `postgresql.postgresqlUsername`            | PostgreSQL user name                                                                              | `collector`                                                         |
 | `postgresql.postgresqlPassword`            | PostgreSQL password                                                                              | `collector`                                                         |
 | `redis.port`            | Redis port                                                                              | `5432`                                                         |
 | `redis.password`            | Redis password                                                                              | `redis`                                                         |
+| `testendpoints.enabled`                           | Creates a testing service                                                                                                                                                | `false`                                                         |
 
 
 ### Tested with the following environment
 
 The following was tested on macos in minikube with the following configuration:
-```sh
-minikube start --vm-driver hyperkit --memory='6128mb' --cpus=4
-```
-```sh
-helm install k-psql \
-  --set postgresqlPassword=kong,postgresqlUsername=kong,postgresqlDatabase=kong \
-    stable/postgresql
 
-kubectl create secret generic kong-enterprise-license --from-file=./license 
-
-
-helm install my-kong stable/kong -f kong-values.yaml
-
-kubectl create secret docker-registry regcred \
-    --docker-server=REGISTRY_URI \
-    --docker-username=USERNAME \
-    --docker-password=APIKEY
-
-helm install collector .
-```
-
-*Testing instructions*
-
+1. Start minikube `minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4`
+1. Install both kong and collector charts then `open http://$(minikube ip):32002`
 1. Create kong service and route then add a collector plugin pointing at the collector host and port.
 1. Ensure traffic is being passed to collector by checking the collector logs
 
 
 ## Changelog
+### 0.1.3
+
+> PR [#2](https://github.com/Kong/kong-collector-helm/pull/2)
+#### Improvements
+
+- Pinned versions
+- Added testing features
+- Added wait for kong
+- Remove duplicate values
 
 ### 0.1.2
 

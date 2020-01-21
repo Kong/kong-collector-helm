@@ -6,7 +6,8 @@ image:
   # tag: latest
 
 imagePullSecrets:
-  - name: regcred
+  - name: bintray-kong-brain-immunity
+  # - name: bintray-kong-brain-internal
 
 waitImage:
   repository: busybox
@@ -14,12 +15,27 @@ waitImage:
   pullPolicy: IfNotPresent
 
 
-kong:
-  host: my-kong-kong-admin
-  port: "8001"
+# Set this to the Kong Admin API hostname
+kongAdminHost: my-kong-kong-admin
+# Set this to the Kong Admin API port
+kongAdminServicePort: 8001
+# Set this to the Kong Admin API protocol
+kongAdminProtocol: http
+containerPort: 5000
+# Set a nodePort which is available
+nodePort: 31555
+service: 
+  type: NodePort
+  port: 5000
 
+# Enable this for running integration tests
+testendpoints: 
+  enabled: false
+
+ingress:
+  enabled: false
+  
 postgresql:
-  enabled: true
   postgresqlUsername: collector
   postgresqlPassword: collector
   postgresqlDatabase: collector
@@ -27,13 +43,5 @@ postgresql:
     port: 5432
 
 redis:
-  enabled: true
   port: 6379
   password: redis
-
-service:
-  type: NodePort
-  port: 5000
-
-ingress:
-  enabled: false
