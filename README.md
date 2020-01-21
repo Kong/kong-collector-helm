@@ -8,31 +8,33 @@ Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using 
 
 This chart bootstraps a [Kong-Collector](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-
 ## Prerequisites
 
 - Kubernetes 1.12+
 - Helm 3.0+
-- Kong Enterprise version 0.36.1+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
+- Kong Enterprise version 1.3.0.2+ or later [chart](https://github.com/helm/charts/tree/master/stable/kong)
 
 ## Installing the Chart
+(If you already have a Kong Admin API, skip to Step 4. )
+
 To install the chart with the release name `my-release`:
 
 1. [Add Kong Enterprise license secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-license)
 
 2. [Add Kong Enterprise registry secret](https://github.com/helm/charts/tree/master/stable/kong#kong-enterprise-docker-registry-access) 
 
-3. Add Kong Brain and Immunity registry secret 
+3. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
+
+```console
+$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
+```
+
+4. Add Kong Brain and Immunity registry secret 
 ```console
 $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
-```
-4. Set up Kong Enterprise with postgresql, overriding postgres host and setting a port for kong manager to use the Kong Admin API
-
-```console
-$ helm install my-kong stable/kong --version 0.36.1 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
 ```
 
 5. Set up collector, overriding Kong Admin host and port to allow collector to push swagger specs to Kong
