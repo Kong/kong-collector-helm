@@ -1,11 +1,16 @@
 image:
-  repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 1.3.0.2-alpine
+  # repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
+  # tag: latest
+  repository: mashape/kong-enterprise
+  tag: dev-master
   pullSecrets:
-  - kong-enterprise-docker
+  # - kong-enterprise-docker
+  - kong-enterprise-dockerhub
 enterprise:
   enabled: true
   license_secret: kong-enterprise-license
+  portal:
+    enabled: true
 ingressController:
   enabled: false
 proxy:
@@ -38,6 +43,9 @@ env:
   pg_port: 5432
   admin_listen: 0.0.0.0:8001, 0.0.0.0:32001
   admin_gui_flags: '{"IMMUNITY_ENABLED":true}'
+  password: my-token
+  portal_auth: basic-auth
+  portal_session_conf: '{"cookie_name":"portal_session","secret":"super-secret","cookie_secure":false,"storage":"kong"}'
 postgresql:
   enabled: true
   postgresqlUsername: kong
