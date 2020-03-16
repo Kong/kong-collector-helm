@@ -88,7 +88,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   env:
   - name: KONG_ADMIN_HOST
     value: "{{ .Values.kongAdmin.host }}"
-  command: [ "/bin/sh", "-c", "until nslookup $KONG_ADMIN_HOST; do echo waiting for $KONG_ADMIN_HOST; sleep 2; done;" ]
+  command: [ "/bin/sh", "-c", "until curl $KONG_ADMIN_HOST; do echo waiting for $KONG_ADMIN_HOST; sleep 2; done;" ]
 {{- end -}}
 
 {{- define "kong-collectorapi.wait-for-redis" -}}
