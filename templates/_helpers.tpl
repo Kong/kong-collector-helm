@@ -24,14 +24,52 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{- define "kong-collectorapi.postgresql.fullname" -}}
+{{/*
+Return the db hostname
+If an external postgresl host is provided, it will use that, otherwise it will fallback
+to the service name. Failing a specified service name it will fall back to the default service name.
+
+This overrides the upstream postegresql chart so that we can deterministically
+use the name of the service the upstream chart creates
+*/}}
+{{- define "kong-collectorapi.postgresql.host" -}}
+{{- if .Values.postgresql.host -}}
+{{- .Values.postgresql.host -}}
+{{- else if .Values.postgresql.serviceName -}}
+{{- .Values.postgresql.serviceName -}}
+{{- else -}}
 {{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{- end -}}
 
-{{- define "kong-collectorapi.redis.fullname" -}}
+
+{{- define "kong-collectorapi.postgresql.fullname" -}}
+{{- template "kong-collectorapi.postgresql.host" . -}}
+{{- end -}}
+
+
+{{/*
+Return the redis hostname
+If an external redis host is provided, it will use that, otherwise it will fallback
+to the service name. Failing a specified service name it will fall back to the default service name.
+
+This overrides the upstream redis chart so that we can deterministically
+use the name of the service the upstream chart creates
+*/}}
+{{- define "kong-collectorapi.redis.host" -}}
+{{- if .Values.redis.host -}}
+{{- .Values.redis.host -}}
+{{- else if .Values.redis.serviceName -}}
+{{- .Values.redis.serviceName -}}
+{{- else -}}
 {{- $name := default "redis" .Values.redis.nameOverride -}}
 {{- printf "%s-%s-master" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "kong-collectorapi.redis.fullname" -}}
+{{- template "kong-collectorapi.redis.host" . -}}
 {{- end -}}
 
 {{/*
@@ -88,7 +126,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   env:
   - name: KONG_ADMIN_HOST
     value: "{{ .Values.kongAdmin.host }}"
-  command: [ "/bin/sh", "-c", "until curl $KONG_ADMIN_HOST; do echo waiting for $KONG_ADMIN_HOST; sleep 2; done;" ]
+  - name: KONG_ADMIN_PORT
+    value: "{{ .Values.kongAdmin.servicePort }}"
+  command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT" ]
 {{- end -}}
 
 {{- define "kong-collectorapi.wait-for-redis" -}}

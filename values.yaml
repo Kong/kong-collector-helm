@@ -33,17 +33,21 @@ collector:
     port: 5000
 
 postgresql:
+  ## Set to false if bringing your own postgresql
   enabled: true
   postgresqlUsername: collector
   postgresqlPassword: collector
   postgresqlDatabase: collector
   service:
     port: 5432
+  # host: collector-postgresql # uncomment if bringing your own postgresql
 
 redis:
+  ## Set to false if bringing your own redis.
   enabled: true
   port: 6379
   password: redis
+  # host: collector-redis-master # uncomment if bringing your own redis
 
 ingress:
   enabled: false

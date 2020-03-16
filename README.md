@@ -104,12 +104,14 @@ and their default .Values.
 | `collector.service.port`                      | TCP port on which the Collector service is exposed | `5000`                                                                                  |
 | `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`                                                                                  |
 | `collector.nodePort`                      | Port to access Collector API from outside the cluster | `31555`                                                                                  |
-| `postgresql.enabled` | Deploy PostgreSQL server                            | `true`                                                                              |
+| `postgresql.enabled` | Deploy PostgreSQL server as subchart                            | `true`                                                                              |
+| `postgresql.host` | PostgreSQL hostname for connecting to existing instance                              | `collector-database`                                                                              |
 | `postgresql.postgresqlDatabase` | PostgreSQL dataname name                              | `collector`                                                                              |
 | `postgresql.service.port`       | PostgreSQL port                                       | `5432`                                                                                   |
 | `postgresql.postgresqlUsername` | PostgreSQL user name                                  | `collector`                                                                              |
 | `postgresql.postgresqlPassword` | PostgreSQL password                                   | `collector`                                                                              |
-| `redis.enabled` | Deploy Redis server                            | `true`                                                                              |
+| `redis.enabled` | Deploy Redis server as subchart                            | `true`                                                                              |
+| `redis.host` | Redis hostname for connecting to existing instance                              | `collector-database`                                                                              |
 | `redis.port`                    | Redis port                                            | `6379`                                                                                   |
 | `redis.password`                | Redis password                                        | `redis`                                                                                  |
 | `testendpoints.enabled`         | Creates a testing service                             | `false`                                                                                  |
