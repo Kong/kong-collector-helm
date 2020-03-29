@@ -16,7 +16,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 ## Prerequisites
 
 - Kubernetes 1.12+
-- Kong Enterprise version 1.3.0.2+
+- Kong Enterprise version 1.5+
   [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
 
 ## Installing the Chart
@@ -160,6 +160,7 @@ $ KONG_PROXY_URL=$(minikube ip):32000  \
 - Pinned collector at 1.2.1
 - Added dev portal to enable swagger test
 - Upgrade kong chart
+- Removed internal build dependencies
 
 ### 0.1.3
 
