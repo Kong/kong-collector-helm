@@ -128,7 +128,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     value: "{{ .Values.kongAdmin.host }}"
   - name: KONG_ADMIN_PORT
     value: "{{ .Values.kongAdmin.servicePort }}"
-  command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT" ]
+  - name: KONG_ADMIN_TOKEN
+    value: "{{ .Values.kongAdmin.token }}"
+  command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT --header=kong-admin-token:$KONG_ADMIN_TOKEN" ]
 {{- end -}}
 
 {{- define "kong-collectorapi.wait-for-redis" -}}
