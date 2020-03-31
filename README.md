@@ -51,7 +51,7 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
    swagger specs to Kong
 
 ```console
-$ helm install my-release . --set kongAdminHost=my-kong-kong-admin
+$ helm install my-release . --set kongAdmin.host=my-kong-kong-admin
 ```
 
 6. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager
