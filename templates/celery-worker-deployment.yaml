@@ -47,7 +47,10 @@ spec:
         - name: KONG_PORT
           value: "{{ .Values.kongAdmin.servicePort }}"
         - name: KONG_ADMIN_TOKEN
-          value: "{{ .Values.kongAdmin.token }}"
+          valueFrom:
+            secretKeyRef:
+              name: kong-admin-token-secret
+              key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

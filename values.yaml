@@ -20,7 +20,11 @@ kongAdmin:
   # Set this to the Kong Admin API protocol
   protocol: http
   # Set this to the Kong Admin API token / KONG_PASSWORD
-  token: my-token
+  token:
+    valueFrom:
+      secretKeyRef:
+        name: kong-admin-token-secret
+        key: kong-admin-token
 
 collector:
   containerPort: 5000

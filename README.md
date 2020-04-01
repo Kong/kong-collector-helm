@@ -39,13 +39,15 @@ $ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml \
    --set env.admin_api_uri=$(minikube ip):32001
 ```
 
-4. Add Kong Brain and Immunity registry secret
+4. Add Kong Brain and Immunity registry secret and RBAC user token secret
 
 ```console
 $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
     --docker-username=$BINTRAY_USER \
     --docker-password=$BINTRAY_KEY
+
+$ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
 ```
 
 5. Set up collector, overriding Kong Admin host, servicePort and token to ensure
