@@ -36,26 +36,15 @@ spec:
         - bash
         - -c
         - flask db upgrade && /collector/run-collector.sh
+        envFrom:
+        - configMapRef:
+            name: collector-config
         env:
-        - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
-        - name: COLLECTOR_DISCARD
-          value: "True"
-        - name: FLASK_APP
-          value: /collector
-        - name: KONG_PROTOCOL
-          value: "{{ .Values.kongAdmin.protocol }}"
-        - name: KONG_HOST
-          value: "{{ .Values.kongAdmin.host }}"
-        - name: KONG_PORT
-          value: "{{ .Values.kongAdmin.servicePort }}"
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
               name: kong-admin-token-secret
               key: kong-admin-token
-        - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         ports:
         - containerPort: {{ .Values.collector.containerPort }}
         resources: {}
@@ -65,52 +54,30 @@ spec:
         - bash
         - -c
         - celery worker -l info -A collector.scheduler.celery --concurrency=1
+        envFrom:
+        - configMapRef:
+            name: collector-config
         env:
-        - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
-        - name: COLLECTOR_DISCARD
-          value: "True"
-        - name: FLASK_APP
-          value: /collector
-        - name: KONG_PROTOCOL
-          value: "{{ .Values.kongAdmin.protocol }}"
-        - name: KONG_HOST
-          value: "{{ .Values.kongAdmin.host }}"
-        - name: KONG_PORT
-          value: "{{ .Values.kongAdmin.servicePort }}"
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
               name: kong-admin-token-secret
               key: kong-admin-token
-        - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
       - name: celery-beat
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
         - bash
         - -c
         - celery beat -l info -A collector.scheduler.celery
+        envFrom:
+        - configMapRef:
+            name: collector-config
         env:
-        - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
-        - name: COLLECTOR_DISCARD
-          value: "True"
-        - name: FLASK_APP
-          value: /collector
-        - name: KONG_PROTOCOL
-          value: "{{ .Values.kongAdmin.protocol }}"
-        - name: KONG_HOST
-          value: "{{ .Values.kongAdmin.host }}"
-        - name: KONG_PORT
-          value: "{{ .Values.kongAdmin.servicePort }}"
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
               name: kong-admin-token-secret
               key: kong-admin-token
-        - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         resources: {}
       restartPolicy: Always
 status: {}
