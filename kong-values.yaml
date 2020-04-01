@@ -1,11 +1,9 @@
 image:
   repository: kong-docker-kong-enterprise-edition-internal-preview-docker.bintray.io/kong-enterprise-edition
   tag: 1.5.0.0-alpine
-  # repository: mashape/kong-enterprise
-  # tag: dev-master
   pullSecrets:
   - kong-enterprise-docker-preview
-  # - kong-enterprise-dockerhub
+
 enterprise:
   enabled: true
   license_secret: kong-enterprise-license

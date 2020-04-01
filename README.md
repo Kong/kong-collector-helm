@@ -158,6 +158,7 @@ $ KONG_PROXY_URL=$(minikube ip):32000  \
 
 ### Unreleased
 
+- Pinned to Kong EE 1.5
 - Exposed RBAC token
 - Pinned collector at 1.2.1
 - Added dev portal to enable swagger test
@@ -182,8 +183,8 @@ $ KONG_PROXY_URL=$(minikube ip):32000  \
 #### Improvements
 
 - Labels on all resources have been updated to adhere to the Helm Chart
-  guideline here:
-  https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository
+  guideline
+  [here](https://v2.helm.sh/docs/developing_charts/#syncing-your-chart-repository):
 - Normalized redis and postgres configurations
 - Added initContainers
 - Bump collector to 1.1.0
