@@ -31,11 +31,12 @@ To install the chart with the release name `my-release`:
 2. [Add Kong Enterprise registry
    secret](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise-docker-registry-access)
 
-3. Set up Kong Enterprise with postgresql, overriding postgres host and setting
-   a port for kong manager to use the Kong Admin API
+3. Set up Kong Enterprise, it will need to set a reachable env.admin_api_uri to
+   Kong Admin API in order for Kong Manager to make requests
 
 ```console
-$ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
+$ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml \
+   --set env.admin_api_uri=$(minikube ip):32001
 ```
 
 4. Add Kong Brain and Immunity registry secret
@@ -47,15 +48,16 @@ $ kubectl create secret docker-registry bintray-kong-brain-immunity \
     --docker-password=$BINTRAY_KEY
 ```
 
-5. Set up collector, overriding Kong Admin host to allow collector to push 
+5. Set up collector, overriding Kong Admin host, servicePort and token to ensure
+   Kong Admin API is reachable by collector, this will allow collector to push
    swagger specs to Kong
 
 ```console
 $ helm install my-release . --set kongAdmin.host=my-kong-kong-admin
 ```
 
-6. Add a "Collector Plugin" to Kong, using the Kong Admin API or Kong Manager
-   GUI
+6. Add a "Collector Plugin" to Kong, using the Kong Manager or Kong Admin API
+   GUI, this will allow Kong to push traffic to collector.
 
 ```console
 $ open http://$(minikube ip):32002
@@ -100,7 +102,7 @@ and their default .Values.
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
 | `kongAdmin.servicePort`                 | Port where Kong Admin API can be found                | `8001`                                                                                   |
-| `kongAdmin.token`                 | Token used for making requests to Kong Admin API                | `my-token`                                                                                   |
+| `kongAdmin.token`                 | Token/Password used for making requests to Kong Admin API                | `my-token`                                                                                   |
 | `collector.service.port`                      | TCP port on which the Collector service is exposed | `5000`                                                                                  |
 | `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`                                                                                  |
 | `collector.nodePort`                      | Port to access Collector API from outside the cluster | `31555`                                                                                  |
