@@ -58,14 +58,8 @@ $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admi
 $ helm install my-release . --set kongAdmin.host=my-kong-kong-admin
 ```
 
-6. Add a "Collector Plugin" to Kong, using the Kong Manager or Kong Admin API
-   GUI, this will allow Kong to push traffic to collector.
-
-```console
-$ open http://$(minikube ip):32002
-```
-
-_OR_
+6. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
+connect to collector.
 
 ```console
 $ curl -s -X POST <NODE_IP>:<KONG_ADMIN_PORT>/<WORKSPACE>/plugins \
@@ -77,8 +71,11 @@ $ curl -s -X POST <NODE_IP>:<KONG_ADMIN_PORT>/<WORKSPACE>/plugins \
   -d config.connection_timeout=300
 ```
 
-7. Follow the [Kong Brain & Immunity
-   Documentation](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/)
+7. Check that collector is reachable by Kong Admin API
+
+```console
+$ curl -s <NODE_IP>:<KONG_ADMIN_PORT>/<WORKSPACE>/collector/alerts kong-admin-token:my-token
+```
 
 ## Uninstalling the Chart
 
