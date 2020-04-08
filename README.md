@@ -90,7 +90,7 @@ deletes the release.
 
 ## Parameters
 
-The following tables lists the configurable parameters of the PostgreSQL chart
+The following tables lists the configurable parameters of the Collector chart
 and their default .Values.
 
 | Parameter                       | Description                                           | Default                                                                                  |
