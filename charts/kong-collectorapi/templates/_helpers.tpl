@@ -131,7 +131,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   - name: KONG_ADMIN_TOKEN
     valueFrom:
       secretKeyRef:
+      {{- if .Values.kongAdmin.existingSecret }}
+        name: {{ .Values.kongAdmin.existingSecret }}
+      {{- else }}
         name: kong-admin-token-secret
+      {{- end }}  
         key: kong-admin-token
   command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT --header=kong-admin-token:$KONG_ADMIN_TOKEN" ]
 {{- end -}}

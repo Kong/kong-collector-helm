@@ -52,7 +52,11 @@ spec:
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
+            {{- if .Values.kongAdmin.existingSecret }}
+              name: {{ .Values.kongAdmin.existingSecret }}
+            {{- else }}
               name: kong-admin-token-secret
+            {{- end }}  
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
@@ -81,7 +85,11 @@ spec:
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
+            {{- if .Values.kongAdmin.existingSecret }}
+              name: {{ .Values.kongAdmin.existingSecret }}
+            {{- else }}
               name: kong-admin-token-secret
+            {{- end }}  
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
@@ -107,7 +115,11 @@ spec:
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
+            {{- if .Values.kongAdmin.existingSecret }}
+              name: {{ .Values.kongAdmin.existingSecret }}
+            {{- else }}
               name: kong-admin-token-secret
+            {{- end }}  
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
