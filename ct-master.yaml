@@ -1,7 +1,0 @@
-# See https://github.com/helm/chart-testing#configuration
-remote: origin
-chart-repos:
-  - bitnami=https://charts.bitnami.com/bitnami
-  - kong=https://charts.konghq.com
-helm-extra-args: --timeout 200
-check-version-increment: false
