@@ -17,7 +17,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 - Kubernetes 1.12+
 - Kong Enterprise version 1.5+
-  [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
+  [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise) [Version compatibility](docs/version-compatibility.md)
 
 ## Installing the Chart
 
