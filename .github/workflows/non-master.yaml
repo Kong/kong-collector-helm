@@ -27,11 +27,12 @@ jobs:
           install_local_path_provisioner: true
         if: steps.lint.outputs.changed == 'true'
 
-      - name: Run some sanity checks
+      - name: Add prerequisites
         run: |
+          helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml
           kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
-          kubectl create secret docker-registry bintray-kong-brain-immunity --docker-server=kong-docker-kong-brain-immunity-base.bintray.io --docker-username=${{ secrets.BINTRAY_USER }} --docker-password=${{ secrets.BINTRAY_KEY }}
-          echo ${{ secrets.LICENSE }} >> license && kubectl create secret generic kong-enterprise-license --from-file=./license && rm -rf license
+          docker pull kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:1.2.1
+          kind load docker-image kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:1.2.1
 
       - name: Run chart-testing (install)
         uses: helm/chart-testing-action@v1.0.0-alpha.3
