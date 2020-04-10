@@ -21,3 +21,19 @@ jobs:
         with:
           command: lint
 
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.0.0-alpha.3
+        with:
+          install_local_path_provisioner: true
+        if: steps.lint.outputs.changed == 'true'
+
+      - name: Run some sanity checks
+        run: |
+          kubectl get nodes -o wide
+          kubectl get pods --all-namespaces -o wide
+          kubectl get services --all-namespaces -o wide
+
+      - name: Run chart-testing (install)
+        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        with:
+          command: install
