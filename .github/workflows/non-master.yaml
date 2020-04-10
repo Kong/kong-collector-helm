@@ -29,9 +29,9 @@ jobs:
 
       - name: Run some sanity checks
         run: |
-          kubectl get nodes -o wide
-          kubectl get pods --all-namespaces -o wide
-          kubectl get services --all-namespaces -o wide
+          kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
+          kubectl create secret docker-registry bintray-kong-brain-immunity --docker-server=kong-docker-kong-brain-immunity-base.bintray.io --docker-username=${{ secrets.BINTRAY_USER }} --docker-password=${{ secrets.BINTRAY_KEY }}
+          echo ${{ secrets.LICENSE }} >> license && kubectl create secret generic kong-enterprise-license --from-file=./license && rm -rf license
 
       - name: Run chart-testing (install)
         uses: helm/chart-testing-action@v1.0.0-alpha.3
