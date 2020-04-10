@@ -25,6 +25,8 @@ kongAdmin:
       secretKeyRef:
         name: kong-admin-token-secret
         key: kong-admin-token
+  # Set this to the Kong Admin API token / KONG_PASSWORD secret
+  # existingSecret: kong-admin-token-secret-just-got-more-secret
 
 collector:
   containerPort: 5000

@@ -103,6 +103,7 @@ and their default .Values.
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
 | `kongAdmin.servicePort`                 | Port where Kong Admin API can be found                | `8001`                                                                                   |
 | `kongAdmin.token`                 | Token/Password used for making requests to Kong Admin API                | `my-token`                                                                                   |
+| `kongAdmin.existingSecret`                 | Name of existing secret to use for Kong Admin API Token/Password               | `nil`                                                                                   |
 | `collector.service.port`                      | TCP port on which the Collector service is exposed | `5000`                                                                                  |
 | `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`                                                                                  |
 | `collector.nodePort`                      | Port to access Collector API from outside the cluster | `31555`                                                                                  |
