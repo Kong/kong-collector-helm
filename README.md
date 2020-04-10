@@ -55,6 +55,7 @@ $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admi
    swagger specs to Kong
 
 ```console
+$ helm dep update ./charts/kong-collectorapi
 $ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
 ```
 
