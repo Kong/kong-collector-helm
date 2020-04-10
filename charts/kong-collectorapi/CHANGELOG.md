@@ -2,8 +2,14 @@
 
 ### Unreleased
 
+### 0.1.4
+
+#### Improvements
+
+- Added existingSecret from kong admin token
+- Moved all containers into collector pod
 - Pinned to Kong EE 1.5
-- Exposed RBAC token
+- Exposed kong admin token
 - Pinned collector at 1.2.1
 - Added dev portal to enable swagger test
 - Upgrade kong chart
