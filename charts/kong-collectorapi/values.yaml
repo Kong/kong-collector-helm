@@ -4,7 +4,7 @@ image:
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
-  - name: bintray-kong-brain-immunity
+  - name: kong-brain-immunity-docker
 
 waitImage:
   repository: busybox
@@ -25,8 +25,8 @@ kongAdmin:
       secretKeyRef:
         name: kong-admin-token-secret
         key: kong-admin-token
-  # Set this to the Kong Admin API token / KONG_PASSWORD secret
-  # existingSecret: kong-admin-token-secret-just-got-more-secret
+  # Set this to override the name of the secret above
+  # existingSecret: kong-admin-token-secret
 
 collector:
   containerPort: 5000

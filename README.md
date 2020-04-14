@@ -42,12 +42,14 @@ $ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml \
 4. Add Kong Brain and Immunity registry secret and RBAC user token secret
 
 ```console
-$ kubectl create secret docker-registry bintray-kong-brain-immunity \
+$ kubectl create secret docker-registry kong-brain-immunity-docker \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
-    --docker-username=$BINTRAY_USER \
-    --docker-password=$BINTRAY_KEY
+    --docker-username=<your-bintray-username@kong> \
+    --docker-password=<your-bintray-api-key>
+secret/kong-brain-immunity-docker created
 
 $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
+secret/kong-admin-token-secret created
 ```
 
 5. Set up collector, overriding Kong Admin host, servicePort and token to ensure
@@ -122,10 +124,14 @@ and their default .Values.
 
 The following was tested on MacOS in minikube with the following configuration:
 
-1. Start local kubernetes cluster
+1. Start local kubernetes cluster and create all four required secrets
+   (kong-enterprise-license, kong-enterprise-edition-docker,
+   kong-brain-immunity-docker, kong-admin-token-secret)
 
 ```console
 $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
+$ helm repo add kong https://charts.konghq.com
+$ helm repo update
 ```
 
 2. Install both kong and collector charts then `open http://$(minikube
@@ -133,12 +139,12 @@ $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
 
 ```console
 $ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
-$ helm install my-release . --set kongAdmin.host=my-kong-kong-admin
+$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
 3. Create kong service and route then add a collector plugin pointing at the
-   collector, if you have access to 
+   collector, if you have access to
    [kong-collector](https://github.com/kong/kong-collector) you can pull this
    code and run the integration tests using as shown below
 
