@@ -146,15 +146,10 @@ $ kubectl wait --for=condition=complete job --all && helm test my-release
    code and run the integration tests using as shown below
 
 ```console
-$ KONG_ADMIN_URL=$(minikube ip):32001  \
-   COLLECTOR_URL=my-release-kong-collectorapi:5000  \
-   ENDPOINT_URL=my-release-kong-collectorapi-testendpoints:6000 ./kong-setup.sh
+$ KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=my-release-kong-collectorapi:5000 ENDPOINT_URL=my-release-kong-collectorapi-testendpoints:6000 TOKEN=my-token ./kong-setup.sh
 
-$ KONG_PROXY_URL=$(minikube ip):32000  \
-   KONG_PROXY_INTERNAL_URL=$(minikube ip):8000 \
-   KONG_ADMIN_URL=$(minikube ip):32001  \
-   COLLECTOR_URL=$(minikube ip):31555 pipenv run python integration_test.py
-
+$ KONG_PROXY_INTERNAL_URL=$(minikube ip):8000 KONG_PROXY_URL=$(minikube ip):32000 KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=$(minikube ip):31555 TOKEN=my-token pipenv run python integration_test.py
+```
 ```
 
 ## Seeking help
