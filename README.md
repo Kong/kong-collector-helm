@@ -23,10 +23,9 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 *This guide assumes you have a Kong Admin API reachable at
    my-kong-kong-admin:8001, for instructions to set up Kong Enterprise Edition
-   with helm see the section titled "Tested with the following environment"*
+   with helm see the section below titled "Testing with minikube"*
 
 To install the chart with the release name `my-release`:
-
 
 1. Add Kong Brain and Immunity registry secret and RBAC user token secret
 
@@ -43,8 +42,7 @@ secret/kong-admin-token-secret created
 
 2. Set up collector, overriding Kong Admin host, servicePort and token to ensure
    Kong Admin API is reachable by collector, this will allow collector to push
-   swagger specs to Kong and can be confirmed by visiting the /status endpoint
-   of collector
+   swagger specs to Kong
 
 ```console
 $ helm dep update ./charts/kong-collectorapi
@@ -117,7 +115,7 @@ and their default .Values.
 | `redis.password`                | Redis password                                        | `redis`                                                                                  |
 | `testendpoints.enabled`         | Creates a testing service                             | `false`                                                                                  |
 
-### Tested with the following environment
+### Testing with minikube
 
 The following was tested on MacOS in minikube with the following configuration:
 
@@ -149,7 +147,6 @@ $ kubectl wait --for=condition=complete job --all && helm test my-release
 $ KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=my-release-kong-collectorapi:5000 ENDPOINT_URL=my-release-kong-collectorapi-testendpoints:6000 TOKEN=my-token ./kong-setup.sh
 
 $ KONG_PROXY_INTERNAL_URL=$(minikube ip):8000 KONG_PROXY_URL=$(minikube ip):32000 KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=$(minikube ip):31555 TOKEN=my-token pipenv run python integration_test.py
-```
 ```
 
 ## Seeking help
