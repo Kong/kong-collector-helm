@@ -21,60 +21,59 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Installing the Chart
 
-(If you already have a Kong Admin API, skip to Step 4. )
+*This guide assumes you have a Kong Admin API reachable at
+   my-kong-kong-admin:8001, for instructions to set up Kong Enterprise Edition
+   with helm see the section titled "Tested with the following environment"*
 
 To install the chart with the release name `my-release`:
 
-1. [Add Kong Enterprise license
-   secret](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
 
-2. [Add Kong Enterprise registry
-   secret](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise-docker-registry-access)
-
-3. Set up Kong Enterprise, it will need to set a reachable env.admin_api_uri to
-   Kong Admin API in order for Kong Manager to make requests
+1. Add Kong Brain and Immunity registry secret and RBAC user token secret
 
 ```console
-$ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml \
-   --set env.admin_api_uri=$(minikube ip):32001
-```
-
-4. Add Kong Brain and Immunity registry secret and RBAC user token secret
-
-```console
-$ kubectl create secret docker-registry bintray-kong-brain-immunity \
+$ kubectl create secret docker-registry kong-brain-immunity-docker \
     --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
-    --docker-username=$BINTRAY_USER \
-    --docker-password=$BINTRAY_KEY
+    --docker-username=<your-bintray-username@kong> \
+    --docker-password=<your-bintray-api-key>
+secret/kong-brain-immunity-docker created
 
 $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
+secret/kong-admin-token-secret created
 ```
 
-5. Set up collector, overriding Kong Admin host, servicePort and token to ensure
+2. Set up collector, overriding Kong Admin host, servicePort and token to ensure
    Kong Admin API is reachable by collector, this will allow collector to push
-   swagger specs to Kong
+   swagger specs to Kong and can be confirmed by visiting the /status endpoint
+   of collector
 
 ```console
 $ helm dep update ./charts/kong-collectorapi
 $ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
 ```
 
-6. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
+```console
+$ curl -s <KONG_ADMIN_API_HOST>:<KONG_ADMIN_PORT>/<WORKSPACE>/collector/status kong-admin-token:my-token
+```
+
+3. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
 connect to collector.
 
 ```console
-$ curl -s -X POST <NODE_IP>:<KONG_ADMIN_PORT>/<WORKSPACE>/plugins \
+$ curl -s -X POST <KONG_ADMIN_API_HOST>:<KONG_ADMIN_PORT>/<WORKSPACE>/plugins \
   -d name=collector \
-  -d config.http_endpoint=http://<COLLECTOR_HOST>:<SERVICE_PORT> \
-  -d config.queue_size=100 \
-  -d config.flush_timeout=1 \
-  -d config.connection_timeout=300
+  -d config.http_endpoint=http://<COLLECTOR_HOST>:<SERVICE_PORT>
 ```
 
-7. Check that collector is reachable by Kong Admin API
+4. Check that collector is reachable by Kong Admin API
 
 ```console
-$ curl -s <NODE_IP>:<KONG_ADMIN_PORT>/<WORKSPACE>/collector/alerts kong-admin-token:my-token
+$ curl -s <KONG_ADMIN_API_HOST>:<KONG_ADMIN_PORT>/<WORKSPACE>/collector/alerts kong-admin-token:my-token
+```
+
+5. Ensure your Kong Manager is reachable and has the Immunity feature flag set
+
+```console
+KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}
 ```
 
 ## Uninstalling the Chart
@@ -122,10 +121,14 @@ and their default .Values.
 
 The following was tested on MacOS in minikube with the following configuration:
 
-1. Start local kubernetes cluster
+1. Start local kubernetes cluster and create all four required secrets
+   (kong-enterprise-license, kong-enterprise-edition-docker,
+   kong-brain-immunity-docker, kong-admin-token-secret)
 
 ```console
 $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
+$ helm repo add kong https://charts.konghq.com
+$ helm repo update
 ```
 
 2. Install both kong and collector charts then `open http://$(minikube
@@ -133,12 +136,12 @@ $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
 
 ```console
 $ helm install my-kong kong/kong --version 1.3.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
-$ helm install my-release . --set kongAdmin.host=my-kong-kong-admin
+$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
 3. Create kong service and route then add a collector plugin pointing at the
-   collector, if you have access to 
+   collector, if you have access to
    [kong-collector](https://github.com/kong/kong-collector) you can pull this
    code and run the integration tests using as shown below
 
