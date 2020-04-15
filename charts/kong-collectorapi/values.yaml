@@ -55,7 +55,3 @@ redis:
 
 ingress:
   enabled: false
-
-# Enable this only for running integration tests
-testendpoints:
-  enabled: false

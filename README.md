@@ -113,7 +113,6 @@ and their default .Values.
 | `redis.host` | Redis hostname for connecting to existing instance                              | `collector-database`                                                                              |
 | `redis.port`                    | Redis port                                            | `6379`                                                                                   |
 | `redis.password`                | Redis password                                        | `redis`                                                                                  |
-| `testendpoints.enabled`         | Creates a testing service                             | `false`                                                                                  |
 
 ### Testing with minikube
 
@@ -139,14 +138,12 @@ $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
 3. Create kong service and route then add a collector plugin pointing at the
-   collector, if you have access to
-   [kong-collector](https://github.com/kong/kong-collector) you can pull this
-   code and run the integration tests using as shown below
+   collector service hostname and port
 
 ```console
-$ KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=my-release-kong-collectorapi:5000 ENDPOINT_URL=my-release-kong-collectorapi-testendpoints:6000 TOKEN=my-token ./kong-setup.sh
-
-$ KONG_PROXY_INTERNAL_URL=$(minikube ip):8000 KONG_PROXY_URL=$(minikube ip):32000 KONG_ADMIN_URL=$(minikube ip):32001 COLLECTOR_URL=$(minikube ip):31555 TOKEN=my-token pipenv run python integration_test.py
+$ curl -s -X POST <KONG_ADMIN_API_HOST>:<KONG_ADMIN_PORT>/<WORKSPACE>/plugins \
+  -d name=collector \
+  -d config.http_endpoint=http://<COLLECTOR_HOST>:<SERVICE_PORT>
 ```
 
 ## Seeking help
