@@ -98,6 +98,15 @@ spec:
         env:
         - name: CELERY_BROKER_URL
           value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
+      - name: celery-flower
+        image: "mher/flower"
+        args:
+        - bash
+        - -c
+        - flower --port=5555
+        env:
+        - name: CELERY_BROKER_URL
+          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         resources: {}
       restartPolicy: Always
 status: {}

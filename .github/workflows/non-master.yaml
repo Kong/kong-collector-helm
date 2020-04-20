@@ -25,7 +25,7 @@ jobs:
         uses: helm/kind-action@v1.0.0-alpha.3
         with:
           install_local_path_provisioner: true
-        # if: steps.lint.outputs.changed == 'true'
+        if: steps.lint.outputs.changed == 'true'
 
       - name: Add prerequisites
         run: |
