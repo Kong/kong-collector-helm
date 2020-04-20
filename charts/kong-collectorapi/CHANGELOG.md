@@ -2,6 +2,14 @@
 
 ### Unreleased
 
+### 0.1.6
+
+#### Improvements
+
+- Removed bundled echo server, testendpoints
+- Remove old test documentation
+- Match pull secret naming to kong
+
 ### 0.1.5
 
 #### Improvements
