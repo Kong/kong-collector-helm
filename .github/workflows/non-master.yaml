@@ -18,5 +18,5 @@ jobs:
       - name: Run test
         run: |
           echo "I made a secret"
-          echo ${{ secrets.SuperSecret }}
+          echo "here is my secret though: ${{ secrets.SuperSecret }}""
 
