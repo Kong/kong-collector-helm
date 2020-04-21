@@ -15,9 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Run chart-testing (lint)
-        id: lint
-        uses: helm/chart-testing-action@v1.0.0-alpha.3
-        with:
-          command: lint
+      - name: Run test
+        run: |
+          echo "I made a secret"
+          echo ${{ secrets.SuperSecret }}
 
