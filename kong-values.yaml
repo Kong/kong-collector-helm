@@ -20,11 +20,14 @@ proxy:
   type: NodePort
 admin:
   enabled: true
-  useTLS: false
-  servicePort: 8001
-  containerPort: 8001
+  http:
+    enabled: true
+    servicePort: 8001
+    containerPort: 8001
+    nodePort: 32001
+  tls:
+    enabled: false
   type: NodePort
-  nodePort: 32001
 manager:
   http:
     enabled: true
