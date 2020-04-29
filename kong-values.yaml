@@ -14,26 +14,29 @@ ingressController:
 proxy:
   http:
     enabled: true
-    nodePort: 32000
+    # nodePort: 32000
   tls:
     enabled: false
-  type: NodePort
+  type: ClusterIP
 admin:
   enabled: true
-  useTLS: false
-  servicePort: 8001
-  containerPort: 8001
-  type: NodePort
-  nodePort: 32001
+  http:
+    enabled: true
+    servicePort: 8001
+    containerPort: 8001
+    # nodePort: 32001
+  tls:
+    enabled: false
+  type: ClusterIP
 manager:
   http:
     enabled: true
     servicePort: 8002
     containerPort: 8002
-    nodePort: 32002
+    # nodePort: 32002
   tls:
     enabled: false
-  type: NodePort
+  type: ClusterIP
 env:
   database: postgres
   pg_user: kong
@@ -60,3 +63,7 @@ postgresql:
   nameOverride: kongdb
   service:
     port: 5432
+  persistence:
+    enabled: true
+  volumePermissions:
+    enabled: true
