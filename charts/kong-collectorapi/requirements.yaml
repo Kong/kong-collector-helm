@@ -1,6 +1,6 @@
 dependencies:
 - name: postgresql
-  version: 8.2.1
+  version: 8.6.8
   repository: https://charts.bitnami.com/bitnami
   condition: postgresql.enabled
 - name: redis
