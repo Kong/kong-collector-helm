@@ -20,4 +20,13 @@ jobs:
         uses: helm/chart-testing-action@v1.0.0-alpha.3
         with:
           command: lint
+          config: ct.yaml
+
+      - name: Create kind cluster and install
+        env:
+          KONG_LICENSE_DATA: ${{ secrets.LICENSE }}
+          KONG_REGISTRY_USER: ${{ secrets.KONG_REGISTRY_USER }}
+          KONG_REGISTRY_KEY: ${{ secrets.KONG_REGISTRY_KEY }}
+        run: |
+          bash .github/workflows/e2e-kind.sh
 
