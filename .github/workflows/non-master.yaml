@@ -25,8 +25,8 @@ jobs:
       - name: Create kind cluster and install
         env:
           KONG_LICENSE_DATA: ${{ secrets.LICENSE }}
-          KONG_REGISTRY_USER: ${{ secrets.KONG_REGISTRY_USER }}
-          KONG_REGISTRY_KEY: ${{ secrets.KONG_REGISTRY_KEY }}
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
         run: |
           bash .github/workflows/e2e-kind.sh
 

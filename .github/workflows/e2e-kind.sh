@@ -56,25 +56,31 @@ create_kind_cluster() {
 }
 
 install_prereqs() {
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-enterprise-edition-docker.bintray.io
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-brain-immunity-base.bintray.io
+    docker pull kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:1.5.0.0-alpine
+    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:1.5.0.0-alpine
+    docker pull kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:2.0.1
+    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:2.0.1
     docker_exec kubectl create namespace cool-namespace
     echo $KONG_LICENSE_DATA >> license \
     && docker_exec kubectl create secret generic kong-enterprise-license --from-file=./license --namespace=cool-namespace \
     && rm -rf license
     docker_exec kubectl create secret docker-registry kong-enterprise-edition-docker \
-        --docker-server=registry.kongcloud.io \
-        --docker-username=$KONG_REGISTRY_USER \
-        --docker-password=$KONG_REGISTRY_KEY --namespace=cool-namespace
+        --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
+        --docker-username=$BINTRAY_USER \
+        --docker-password=$BINTRAY_KEY --namespace=cool-namespace
     docker_exec kubectl create secret docker-registry kong-brain-immunity-docker \
-        --docker-server=registry.kongcloud.io \
-        --docker-username=$KONG_REGISTRY_USER \
-        --docker-password=$KONG_REGISTRY_KEY --namespace=cool-namespace
+        --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
+        --docker-username=$BINTRAY_USER \
+        --docker-password=$BINTRAY_KEY --namespace=cool-namespace
     docker_exec kubectl create secret generic kong-admin-token-secret \
         --from-literal=kong-admin-token=handyshake --namespace=cool-namespace
     docker_exec helm repo add kong https://charts.konghq.com
     docker_exec helm repo add bitnami https://charts.bitnami.com/bitnami
     docker_exec helm repo update
     docker_exec helm install my-kong kong/kong --version 1.5.0 -f "/etc/ct/kong-values.yaml" \
-        -n cool-namespace --set image.repository=registry.kongcloud.io/kong-enterprise-edition 
+        -n cool-namespace 
 }
 
 install_charts() {
