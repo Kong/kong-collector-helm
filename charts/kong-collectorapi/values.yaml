@@ -31,9 +31,9 @@ kongAdmin:
 collector:
   containerPort: 5000
   # Set a nodePort which is available
-  nodePort: 31555
+  # nodePort: 31555
   service:
-    type: NodePort
+    type: ClusterIP
     port: 5000
 
 postgresql:
@@ -45,6 +45,10 @@ postgresql:
   service:
     port: 5432
     # host: collector-postgresql # uncomment if bringing your own postgresql
+  persistence:
+    enabled: true
+  volumePermissions:
+    enabled: true
 
 redis:
   ## Set to false if bringing your own redis.
@@ -52,6 +56,10 @@ redis:
   port: 6379
   password: redis
   # host: collector-redis-master # uncomment if bringing your own redis
+  persistence:
+    enabled: true
+  volumePermissions:
+    enabled: true
 
 ingress:
   enabled: false
