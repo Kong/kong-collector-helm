@@ -1,3 +1,5 @@
+![Lint and Test Charts](https://github.com/Kong/kong-collector-helm/workflows/Lint%20and%20Test%20Charts/badge.svg)
+
 # Kong-Collector
 
 [Kong-Collector](https://konghq.com/products/kong-enterprise/kong-immunity) is
