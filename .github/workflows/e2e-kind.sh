@@ -73,7 +73,7 @@ install_prereqs() {
     docker_exec helm repo add kong https://charts.konghq.com
     docker_exec helm repo add bitnami https://charts.bitnami.com/bitnami
     docker_exec helm repo update
-    docker_exec helm install my-kong kong/kong --version 1.3.0 -f "/etc/ct/kong-values.yaml" \
+    docker_exec helm install my-kong kong/kong --version 1.5.0 -f "/etc/ct/kong-values.yaml" \
         -n cool-namespace --set image.repository=registry.kongcloud.io/kong-enterprise-edition 
 }
 
