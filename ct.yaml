@@ -5,5 +5,4 @@ chart-dirs:
 chart-repos:
   - bitnami=https://charts.bitnami.com/bitnami
   - kong=https://charts.konghq.com
-helm-extra-args: --timeout 200
 check-version-increment: false
