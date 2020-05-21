@@ -17,5 +17,4 @@ when it is merged.
 
 #### Checklist
 [Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
-- [ ] PR is based off the current tip of the `next` branch and targets `next`, not `master`
 - [ ] New or modified sections of values.yaml are documented in the README.md
