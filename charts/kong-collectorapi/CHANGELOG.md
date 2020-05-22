@@ -2,6 +2,12 @@
 
 ### Unreleased
 
+### 0.1.9
+
+#### Improvements
+
+- Configured release on PR merge
+
 ### 0.1.8
 
 #### Improvements

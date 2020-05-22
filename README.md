@@ -49,8 +49,9 @@ secret/kong-admin-token-secret created
    swagger specs to Kong.
 
 ```console
-$ helm dep update ./charts/collector
-$ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
+$ helm repo add kong https://charts.konghq.com
+$ helm repo update
+$ helm install my-release kong/collector --set kongAdmin.host=my-kong-kong-admin
 ```
 
 ```console
