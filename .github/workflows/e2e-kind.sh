@@ -16,14 +16,23 @@ readonly KONG_IMMUNITY_REGISTRY=kong
 readonly KONG_IMMUNITY_IMAGE=immunity
 
 # Update these on bump
+<<<<<<< HEAD
 readonly APP_IMAGE_TAG=4.1.0
 readonly KONG_IMAGE_TAG=2.2-alpine
 readonly KONG_HELM_TAG=1.10.0
+=======
+readonly APP_IMAGE_TAG=2.0.2
+readonly KONG_IMAGE_TAG=1.5.0.0-alpine
+CT_CONFIG=${CT_CONFIG:-ct.yaml}
+>>>>>>> chore(release) create script
 
 run_ct_container() {
     echo 'Running ct container...'
+    echo "ci: $CT_CONFIG"
+    echo "kong-ee: $KONG_IMAGE_TAG"
+    echo "collector: $APP_IMAGE_TAG"
     docker run --rm --interactive --detach --network host --name ct \
-        --volume "$(pwd)/ct.yaml:/etc/ct/ct.yaml" \
+        --volume "$(pwd)/$CT_CONFIG:/etc/ct/ct.yaml" \
         --volume "$(pwd)/kong-values.yaml:/etc/ct/kong-values.yaml" \
         --volume "$(pwd):/workdir" \
         --workdir /workdir \
@@ -73,7 +82,8 @@ install_prereqs() {
     kind load --name $CLUSTER_NAME docker-image $KONG_IMMUNITY_REGISTRY/$KONG_IMMUNITY_IMAGE:$APP_IMAGE_TAG
     docker_exec kubectl create namespace cool-namespace
     echo $KONG_LICENSE_DATA >> license \
-    && docker_exec kubectl create secret generic kong-enterprise-license --from-file=./license --namespace=cool-namespace \
+    && docker_exec kubectl create secret generic kong-enterprise-license \
+        --from-file=./license --namespace=cool-namespace \
     && rm -rf license
     docker_exec kubectl create secret generic kong-admin-token-secret \
         --from-literal=kong-admin-token=handyshake --namespace=cool-namespace
