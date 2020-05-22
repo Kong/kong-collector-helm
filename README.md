@@ -56,7 +56,7 @@ connect to collector, this url should be reachable within kubernetes.
 $ curl -s -X POST http://kong:8001/<WORKSPACE>/plugins \
   -d name=collector \
   -d config.flush_timeout=1 \
-  -d config.http_endpoint=http://my-release-kong-collectorapi:5000
+  -d config.http_endpoint=http://my-release-collector:5000
 ```
 
 4. Check that collector is reachable by Kong Admin API.
@@ -122,7 +122,7 @@ The following was tested on MacOS in minikube with the following configuration:
 $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
 $ helm repo add kong https://charts.konghq.com
 $ helm repo update
-$ helm dependency update ./charts/kong-collectorapi
+$ helm dependency update ./charts/collector
 ```
 
 2. Install both kong and collector charts then `open http://$(minikube
@@ -130,7 +130,7 @@ $ helm dependency update ./charts/kong-collectorapi
 
 ```console
 $ helm install my-kong kong/kong --version 1.5.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
-$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
+$ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
@@ -141,7 +141,7 @@ $ kubectl wait --for=condition=complete job --all && helm test my-release
 $ curl -s -X POST http://kong:8001/<WORKSPACE>/plugins \
   -d name=collector \
   -d config.flush_timeout=1 \
-  -d config.http_endpoint=http://my-release-kong-collectorapi:5000
+  -d config.http_endpoint=http://my-release-collector:5000
 ```
 
 ## Seeking help
