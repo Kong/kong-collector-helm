@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "kong-collectorapi.name" -}}
+{{- define "collector.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "kong-collectorapi.fullname" -}}
+{{- define "collector.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -32,7 +32,7 @@ to the service name. Failing a specified service name it will fall back to the d
 This overrides the upstream postegresql chart so that we can deterministically
 use the name of the service the upstream chart creates
 */}}
-{{- define "kong-collectorapi.postgresql.host" -}}
+{{- define "collector.postgresql.host" -}}
 {{- if .Values.postgresql.host -}}
 {{- .Values.postgresql.host -}}
 {{- else if .Values.postgresql.serviceName -}}
@@ -44,8 +44,8 @@ use the name of the service the upstream chart creates
 {{- end -}}
 
 
-{{- define "kong-collectorapi.postgresql.fullname" -}}
-{{- template "kong-collectorapi.postgresql.host" . -}}
+{{- define "collector.postgresql.fullname" -}}
+{{- template "collector.postgresql.host" . -}}
 {{- end -}}
 
 
@@ -57,7 +57,7 @@ to the service name. Failing a specified service name it will fall back to the d
 This overrides the upstream redis chart so that we can deterministically
 use the name of the service the upstream chart creates
 */}}
-{{- define "kong-collectorapi.redis.host" -}}
+{{- define "collector.redis.host" -}}
 {{- if .Values.redis.host -}}
 {{- .Values.redis.host -}}
 {{- else if .Values.redis.serviceName -}}
@@ -68,20 +68,20 @@ use the name of the service the upstream chart creates
 {{- end -}}
 {{- end -}}
 
-{{- define "kong-collectorapi.redis.fullname" -}}
-{{- template "kong-collectorapi.redis.host" . -}}
+{{- define "collector.redis.fullname" -}}
+{{- template "collector.redis.host" . -}}
 {{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "kong-collectorapi.chart" -}}
+{{- define "collector.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "kong-collectorapi.metaLabels" -}}
-apps.kubernetes.io/app: {{ template "kong-collectorapi.name" . }}
-helm.sh/chart: {{ template "kong-collectorapi.chart" . }}
+{{- define "collector.metaLabels" -}}
+apps.kubernetes.io/app: {{ template "collector.name" . }}
+helm.sh/chart: {{ template "collector.chart" . }}
 app.kubernetes.io/instance: "{{ .Release.Name }}"
 app.kubernetes.io/managed-by: "{{ .Release.Service }}"
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -90,9 +90,9 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{/*
 Common labels
 */}}
-{{- define "kong-collectorapi.labels" -}}
-helm.sh/chart: {{ include "kong-collectorapi.chart" . }}
-{{ include "kong-collectorapi.selectorLabels" . }}
+{{- define "collector.labels" -}}
+helm.sh/chart: {{ include "collector.chart" . }}
+{{ include "collector.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -102,24 +102,24 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "kong-collectorapi.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "kong-collectorapi.name" . }}
+{{- define "collector.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "collector.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{- define "kong-collectorapi.wait-for-db" -}}
+{{- define "collector.wait-for-db" -}}
 - name: wait-for-db
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
   env:
   - name: COLLECTOR_PG_HOST
-    value: {{ template "kong-collectorapi.postgresql.fullname" . }}
+    value: {{ template "collector.postgresql.fullname" . }}
   - name: COLLECTOR_PG_PORT
     value: "{{ .Values.postgresql.service.port }}"
   command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}
 
-{{- define "kong-collectorapi.wait-for-kong" -}}
+{{- define "collector.wait-for-kong" -}}
 - name: wait-for-kong
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
@@ -140,13 +140,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT --header=kong-admin-token:$KONG_ADMIN_TOKEN" ]
 {{- end -}}
 
-{{- define "kong-collectorapi.wait-for-redis" -}}
+{{- define "collector.wait-for-redis" -}}
 - name: wait-for-redis
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
   imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
   env:
   - name: REDIS_HOST
-    value: "{{ template "kong-collectorapi.redis.fullname" . }}"
+    value: "{{ template "collector.redis.fullname" . }}"
   - name: REDIS_PORT
     value: "{{ .Values.redis.port }}"
   command: [ "/bin/sh", "-c", "until nc -zv $REDIS_HOST $REDIS_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]

@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ include "kong-collectorapi.fullname" . }}-test-connection"
+  name: "{{ include "collector.fullname" . }}-test-connection"
   labels:
-{{ include "kong-collectorapi.labels" . | nindent 4 }}
+{{ include "collector.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -13,5 +13,5 @@ spec:
       - name: wget
         image: busybox
         command: ['wget']
-        args:  ['{{ include "kong-collectorapi.fullname" . }}:{{ .Values.collector.service.port }}']
+        args:  ['{{ include "collector.fullname" . }}:{{ .Values.collector.service.port }}']
       restartPolicy: Never

@@ -1,5 +1,5 @@
 apiVersion: v1
-name: kong-collectorapi
+name: collector
 description: Kong Brain and Kong Immunity help automate the entire API and service development life cycle. By automating processes for configuration, traffic analysis and the creation of documentation, Kong Brain and Kong Immunity help organizations improve efficiency, governance, reliability and security.
 home: https://konghq.com/
 icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-large.png
