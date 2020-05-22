@@ -2,6 +2,13 @@
 
 ### Unreleased
 
+### 0.1.8
+
+#### Improvements
+
+- Pinned collector at 2.0.2
+- Collector bugfixes
+
 ### 0.1.7
 
 #### Improvements
