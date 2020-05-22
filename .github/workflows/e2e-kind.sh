@@ -11,11 +11,15 @@ readonly K8S_VERSION=v1.17.0
 # Update these on bump
 readonly APP_IMAGE_TAG=2.0.2
 readonly KONG_IMAGE_TAG=1.5.0.0-alpine
+CT_CONFIG=${CT_CONFIG:-ct.yaml}
 
 run_ct_container() {
     echo 'Running ct container...'
+    echo "ci: $CT_CONFIG"
+    echo "kong-ee: $KONG_IMAGE_TAG"
+    echo "collector: $APP_IMAGE_TAG"
     docker run --rm --interactive --detach --network host --name ct \
-        --volume "$(pwd)/ct.yaml:/etc/ct/ct.yaml" \
+        --volume "$(pwd)/$CT_CONFIG:/etc/ct/ct.yaml" \
         --volume "$(pwd)/kong-values.yaml:/etc/ct/kong-values.yaml" \
         --volume "$(pwd):/workdir" \
         --workdir /workdir \
@@ -59,15 +63,22 @@ create_kind_cluster() {
 }
 
 install_prereqs() {
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-enterprise-edition-docker.bintray.io
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-brain-immunity-base.bintray.io
-    docker pull kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
-    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
-    docker pull kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
-    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER \
+        --password-stdin kong-docker-kong-enterprise-edition-docker.bintray.io
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER \
+        --password-stdin kong-docker-kong-brain-immunity-base.bintray.io
+    docker pull \
+        kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
+    kind load --name $CLUSTER_NAME \
+        docker-image kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
+    docker pull \
+        kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
+    kind load --name $CLUSTER_NAME docker-image \
+        kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
     docker_exec kubectl create namespace cool-namespace
     echo $KONG_LICENSE_DATA >> license \
-    && docker_exec kubectl create secret generic kong-enterprise-license --from-file=./license --namespace=cool-namespace \
+    && docker_exec kubectl create secret generic kong-enterprise-license \
+        --from-file=./license --namespace=cool-namespace \
     && rm -rf license
     docker_exec kubectl create secret docker-registry kong-enterprise-edition-docker \
         --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
