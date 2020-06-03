@@ -6,5 +6,5 @@ icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-larg
 maintainers:
 - name: jackkav
   email: jack.kavanagh@konghq.com
-version: 0.1.8
+version: 0.1.9
 appVersion: 2.0.3
