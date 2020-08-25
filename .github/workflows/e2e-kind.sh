@@ -9,7 +9,7 @@ readonly KIND_VERSION=v0.7.0
 readonly CLUSTER_NAME=chart-testing
 readonly K8S_VERSION=v1.17.0
 # Update these on bump
-readonly APP_IMAGE_TAG=2.0.3
+readonly APP_IMAGE_TAG=3.0.0
 readonly KONG_IMAGE_TAG=1.5.0.0-alpine
 
 run_ct_container() {

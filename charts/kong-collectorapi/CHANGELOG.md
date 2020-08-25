@@ -2,8 +2,16 @@
 
 ### Unreleased
 
+### 0.2.0
+
+#### Improvements
+
+- Pinned collector at 3.0.0
+
 ### 0.1.9
-####Improvements
+
+#### Improvements
+
 - Pinned collector at 2.0.3
 
 ### 0.1.8
