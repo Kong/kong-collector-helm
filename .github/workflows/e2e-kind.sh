@@ -17,8 +17,8 @@ readonly KONG_IMMUNITY_IMAGE=kong-brain-immunity
 
 # Update these on bump
 readonly APP_IMAGE_TAG=3.0.0
-readonly KONG_IMAGE_TAG=1.5.0.0-alpine
-readonly KONG_HELM_TAG=1.5.0
+readonly KONG_IMAGE_TAG=2.1.3.1-alpine
+readonly KONG_HELM_TAG=1.10.0
 
 run_ct_container() {
     echo 'Running ct container...'
