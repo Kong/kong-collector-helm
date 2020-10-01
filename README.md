@@ -19,7 +19,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 - Kubernetes 1.12+
 - Kong Enterprise version 1.5+
-  [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise) [Version compatibility](docs/version-compatibility.md)
+  [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
 - Bintray user and API key
 - A Kong workspace to enable traffic collection `<WORKSPACE>`
 
@@ -98,7 +98,7 @@ and their default .Values.
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `image.repository`              | Kong-Collector Image repository                       | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                    |
-| `image.tag`                     | Kong-Collector Image tag                              | `2.0.3`                                                                                  |
+| `image.tag`                     | Kong-Collector Image tag                              | `3.0.0`                                                                                  |
 | `imagePullSecrets`              | Specify Image pull secrets                            | `- name: kong-brain-immunity-docker` (does not add image pull secrets to deployed pods) |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
