@@ -8,9 +8,17 @@ readonly CT_VERSION=v3.0.0-rc.1
 readonly KIND_VERSION=v0.7.0
 readonly CLUSTER_NAME=chart-testing
 readonly K8S_VERSION=v1.17.0
+
+# Docker image paths
+readonly KONG_EE_REGISTRY=kong-docker-kong-enterprise-edition-docker.bintray.io
+readonly KONG_EE_IMAGE=kong-enterprise-edition
+readonly KONG_IMMUNITY_REGISTRY=kong-docker-kong-brain-immunity-base.bintray.io
+readonly KONG_IMMUNITY_IMAGE=kong-brain-immunity
+
 # Update these on bump
 readonly APP_IMAGE_TAG=3.0.0
 readonly KONG_IMAGE_TAG=1.5.0.0-alpine
+readonly KONG_HELM_TAG=1.5.0
 
 run_ct_container() {
     echo 'Running ct container...'
@@ -59,22 +67,22 @@ create_kind_cluster() {
 }
 
 install_prereqs() {
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-enterprise-edition-docker.bintray.io
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin kong-docker-kong-brain-immunity-base.bintray.io
-    docker pull kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
-    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition:$KONG_IMAGE_TAG
-    docker pull kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
-    kind load --name $CLUSTER_NAME docker-image kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity:$APP_IMAGE_TAG
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin $KONG_EE_REGISTRY
+    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin $KONG_IMMUNITY_REGISTRY
+    docker pull $KONG_EE_REGISTRY/$KONG_EE_IMAGE:$KONG_IMAGE_TAG
+    kind load --name $CLUSTER_NAME docker-image $KONG_EE_REGISTRY/$KONG_EE_IMAGE:$KONG_IMAGE_TAG
+    docker pull $KONG_IMMUNITY_REGISTRY/$KONG_IMMUNITY_IMAGE:$APP_IMAGE_TAG
+    kind load --name $CLUSTER_NAME docker-image $KONG_IMMUNITY_REGISTRY/$KONG_IMMUNITY_IMAGE:$APP_IMAGE_TAG
     docker_exec kubectl create namespace cool-namespace
     echo $KONG_LICENSE_DATA >> license \
     && docker_exec kubectl create secret generic kong-enterprise-license --from-file=./license --namespace=cool-namespace \
     && rm -rf license
     docker_exec kubectl create secret docker-registry kong-enterprise-edition-docker \
-        --docker-server=kong-docker-kong-enterprise-edition-docker.bintray.io \
+        --docker-server=$KONG_EE_REGISTRY \
         --docker-username=$BINTRAY_USER \
         --docker-password=$BINTRAY_KEY --namespace=cool-namespace
-    docker_exec kubectl create secret docker-registry kong-brain-immunity-docker \
-        --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
+    docker_exec kubectl create secret docker-registry kong-immunity-docker \
+        --docker-server=$KONG_IMMUNITY_REGISTRY \
         --docker-username=$BINTRAY_USER \
         --docker-password=$BINTRAY_KEY --namespace=cool-namespace
     docker_exec kubectl create secret generic kong-admin-token-secret \
@@ -82,7 +90,7 @@ install_prereqs() {
     docker_exec helm repo add kong https://charts.konghq.com
     docker_exec helm repo add bitnami https://charts.bitnami.com/bitnami
     docker_exec helm repo update
-    docker_exec helm install my-kong kong/kong --version 1.5.0 -f "/etc/ct/kong-values.yaml" \
+    docker_exec helm install my-kong kong/kong --version $KONG_HELM_TAG -f "/etc/ct/kong-values.yaml" \
         -n cool-namespace
 }
 
