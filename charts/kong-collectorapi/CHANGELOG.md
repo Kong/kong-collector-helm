@@ -2,6 +2,13 @@
 
 ### Unreleased
 
+### 0.3.0
+
+#### Improvements
+
+- Bump kong ee to 2.1.3.1
+- Bump kong helm chart to 1.10.0
+
 ### 0.2.0
 
 #### Improvements
