@@ -2,6 +2,11 @@
 
 ### Unreleased
 
+### 0.4.0
+##### Improvements
+- Bump kong ee to 2.2.0.0
+- Bump Kong Collector to 4.0.0
+
 ### 0.3.0
 
 #### Improvements

@@ -98,7 +98,7 @@ and their default .Values.
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `image.repository`              | Kong-Collector Image repository                       | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                    |
-| `image.tag`                     | Kong-Collector Image tag                              | `3.0.0`                                                                                  |
+| `image.tag`                     | Kong-Collector Image tag                              | `4.0.0`                                                                                  |
 | `imagePullSecrets`              | Specify Image pull secrets                            | `- name: kong-brain-immunity-docker` (does not add image pull secrets to deployed pods) |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
