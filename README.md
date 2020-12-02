@@ -34,11 +34,11 @@ To install the chart with the release name `my-release`:
 1. Add Kong Brain and Immunity registry secret and RBAC user token secret.
 
 ```console
-$ kubectl create secret docker-registry kong-brain-immunity-docker \
-    --docker-server=kong-docker-kong-brain-immunity-base.bintray.io \
+$ kubectl create secret docker-registry kong-immunity-docker \
+    --docker-server=kong-docker-kong-immunity-base.bintray.io \
     --docker-username=<your-bintray-username@kong> \
     --docker-password=<your-bintray-api-key>
-secret/kong-brain-immunity-docker created
+secret/kong-immunity-docker created
 
 $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
 secret/kong-admin-token-secret created
@@ -97,9 +97,9 @@ and their default .Values.
 
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `image.repository`              | Kong-Collector Image repository                       | `kong-docker-kong-brain-immunity-base.bintray.io/kong-brain-immunity`                    |
+| `image.repository`              | Kong-Collector Image repository                       | `kong-docker-kong-immunity-base.bintray.io/kong-immunity`                    |
 | `image.tag`                     | Kong-Collector Image tag                              | `4.0.0`                                                                                  |
-| `imagePullSecrets`              | Specify Image pull secrets                            | `- name: kong-brain-immunity-docker` (does not add image pull secrets to deployed pods) |
+| `imagePullSecrets`              | Specify Image pull secrets                            | `- name: kong-immunity-docker` (does not add image pull secrets to deployed pods) |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
 | `kongAdmin.servicePort`                 | Port where Kong Admin API can be found                | `8001`                                                                                   |
@@ -125,7 +125,7 @@ The following was tested on MacOS in minikube with the following configuration:
 
 1. Start local kubernetes cluster and create all four required secrets.
    (kong-enterprise-license, kong-enterprise-edition-docker,
-   kong-brain-immunity-docker, kong-admin-token-secret)
+   kong-immunity-docker, kong-admin-token-secret)
 
 ```console
 $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
