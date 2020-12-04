@@ -12,12 +12,12 @@ readonly K8S_VERSION=v1.17.0
 # Docker image paths
 readonly KONG_EE_REGISTRY=kong-docker-kong-enterprise-edition-docker.bintray.io
 readonly KONG_EE_IMAGE=kong-enterprise-edition
-readonly KONG_IMMUNITY_REGISTRY=kong-docker-kong-brain-immunity-base.bintray.io
-readonly KONG_IMMUNITY_IMAGE=kong-brain-immunity
+readonly KONG_IMMUNITY_REGISTRY=kong-docker-kong-immunity-base.bintray.io
+readonly KONG_IMMUNITY_IMAGE=kong-immunity
 
 # Update these on bump
-readonly APP_IMAGE_TAG=3.0.0
-readonly KONG_IMAGE_TAG=2.1.3.1-alpine
+readonly APP_IMAGE_TAG=4.0.0
+readonly KONG_IMAGE_TAG=2.2.0.0-alpine
 readonly KONG_HELM_TAG=1.10.0
 
 run_ct_container() {
