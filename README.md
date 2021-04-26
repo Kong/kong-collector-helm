@@ -49,7 +49,6 @@ secret/kong-admin-token-secret created
    swagger specs to Kong.
 
 ```console
-$ helm dep update ./charts/kong-collectorapi
 $ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
 ```
 
