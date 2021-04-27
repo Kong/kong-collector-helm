@@ -63,3 +63,7 @@ redis:
 
 ingress:
   enabled: false
+
+exteralSecrets:
+  enabled: false
+  path: /cloud.konghq.com/dockerhub/kongcloud/dockerconfigjson
