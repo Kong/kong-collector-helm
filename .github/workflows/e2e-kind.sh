@@ -16,15 +16,9 @@ readonly KONG_IMMUNITY_REGISTRY=kong
 readonly KONG_IMMUNITY_IMAGE=immunity
 
 # Update these on bump
-<<<<<<< HEAD
 readonly APP_IMAGE_TAG=4.1.0
 readonly KONG_IMAGE_TAG=2.2-alpine
 readonly KONG_HELM_TAG=1.10.0
-=======
-readonly APP_IMAGE_TAG=2.0.2
-readonly KONG_IMAGE_TAG=1.5.0.0-alpine
-CT_CONFIG=${CT_CONFIG:-ct.yaml}
->>>>>>> chore(release) create script
 
 run_ct_container() {
     echo 'Running ct container...'
