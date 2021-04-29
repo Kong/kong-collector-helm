@@ -10,14 +10,14 @@ readonly CLUSTER_NAME=chart-testing
 readonly K8S_VERSION=v1.17.0
 
 # Docker image paths
-readonly KONG_EE_REGISTRY=kong-docker-kong-enterprise-edition-docker.bintray.io
-readonly KONG_EE_IMAGE=kong-enterprise-edition
-readonly KONG_IMMUNITY_REGISTRY=kong-docker-kong-immunity-base.bintray.io
-readonly KONG_IMMUNITY_IMAGE=kong-immunity
+readonly KONG_EE_REGISTRY=kong
+readonly KONG_EE_IMAGE=kong-gateway
+readonly KONG_IMMUNITY_REGISTRY=kong
+readonly KONG_IMMUNITY_IMAGE=immunity
 
 # Update these on bump
 readonly APP_IMAGE_TAG=4.0.0
-readonly KONG_IMAGE_TAG=2.2.0.0-alpine
+readonly KONG_IMAGE_TAG=2.2-alpine
 readonly KONG_HELM_TAG=1.10.0
 
 run_ct_container() {
@@ -67,8 +67,6 @@ create_kind_cluster() {
 }
 
 install_prereqs() {
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin $KONG_EE_REGISTRY
-    echo "$BINTRAY_KEY" | docker login --username $BINTRAY_USER --password-stdin $KONG_IMMUNITY_REGISTRY
     docker pull $KONG_EE_REGISTRY/$KONG_EE_IMAGE:$KONG_IMAGE_TAG
     kind load --name $CLUSTER_NAME docker-image $KONG_EE_REGISTRY/$KONG_EE_IMAGE:$KONG_IMAGE_TAG
     docker pull $KONG_IMMUNITY_REGISTRY/$KONG_IMMUNITY_IMAGE:$APP_IMAGE_TAG
@@ -77,14 +75,6 @@ install_prereqs() {
     echo $KONG_LICENSE_DATA >> license \
     && docker_exec kubectl create secret generic kong-enterprise-license --from-file=./license --namespace=cool-namespace \
     && rm -rf license
-    docker_exec kubectl create secret docker-registry kong-enterprise-edition-docker \
-        --docker-server=$KONG_EE_REGISTRY \
-        --docker-username=$BINTRAY_USER \
-        --docker-password=$BINTRAY_KEY --namespace=cool-namespace
-    docker_exec kubectl create secret docker-registry kong-immunity-docker \
-        --docker-server=$KONG_IMMUNITY_REGISTRY \
-        --docker-username=$BINTRAY_USER \
-        --docker-password=$BINTRAY_KEY --namespace=cool-namespace
     docker_exec kubectl create secret generic kong-admin-token-secret \
         --from-literal=kong-admin-token=handyshake --namespace=cool-namespace
     docker_exec helm repo add kong https://charts.konghq.com

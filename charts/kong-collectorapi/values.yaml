@@ -1,10 +1,7 @@
 image:
-  repository: kong-docker-kong-immunity-base.bintray.io/kong-immunity
+  repository: kong/immunity
   tag: 4.0.0
   pullPolicy: IfNotPresent
-
-imagePullSecrets:
-  - name: kong-immunity-docker
 
 waitImage:
   repository: busybox

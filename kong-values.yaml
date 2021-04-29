@@ -1,6 +1,6 @@
 image:
-  repository: kong-docker-kong-enterprise-edition-docker.bintray.io/kong-enterprise-edition
-  tag: 2.2.0.0-alpine
+  repository: kong/kong-gateway
+  tag: 2.2-alpine
   pullSecrets:
   - kong-enterprise-edition-docker
 

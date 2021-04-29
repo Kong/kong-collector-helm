@@ -20,7 +20,6 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 - Kubernetes 1.12+
 - Kong Enterprise version 1.5+
   [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
-- Bintray user and API key
 - A Kong workspace to enable traffic collection `<WORKSPACE>`
 
 ## Installing the Chart
@@ -31,15 +30,9 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 To install the chart with the release name `my-release`:
 
-1. Add Kong Brain and Immunity registry secret and RBAC user token secret.
+1. Add RBAC user token secret.
 
 ```console
-$ kubectl create secret docker-registry kong-immunity-docker \
-    --docker-server=kong-docker-kong-immunity-base.bintray.io \
-    --docker-username=<your-bintray-username@kong> \
-    --docker-password=<your-bintray-api-key>
-secret/kong-immunity-docker created
-
 $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
 secret/kong-admin-token-secret created
 ```
@@ -96,9 +89,8 @@ and their default .Values.
 
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `image.repository`              | Kong-Collector Image repository                       | `kong-docker-kong-immunity-base.bintray.io/kong-immunity`                    |
+| `image.repository`              | Kong-Collector Image repository                       | `kong/immunity`                    |
 | `image.tag`                     | Kong-Collector Image tag                              | `4.0.0`                                                                                  |
-| `imagePullSecrets`              | Specify Image pull secrets                            | `- name: kong-immunity-docker` (does not add image pull secrets to deployed pods) |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
 | `kongAdmin.servicePort`                 | Port where Kong Admin API can be found                | `8001`                                                                                   |
