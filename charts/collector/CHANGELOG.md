@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+### 0.4.2
+##### Removed
+- Brain docs
 
 ### 0.4.1
 ##### Improvements
@@ -9,6 +12,7 @@
 - Bump Kong Collector to 4.1.0
 - Use dockerhub
 - Configured release on PR merge
+
 
 ### 0.4.0
 ##### Improvements
