@@ -43,7 +43,7 @@ secret/kong-admin-token-secret created
 
 ```console
 
-$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
+$ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
 ```
 
 ```console
