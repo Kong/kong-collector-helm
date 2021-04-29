@@ -16,7 +16,7 @@ readonly KONG_IMMUNITY_REGISTRY=kong
 readonly KONG_IMMUNITY_IMAGE=immunity
 
 # Update these on bump
-readonly APP_IMAGE_TAG=4.0.0
+readonly APP_IMAGE_TAG=4.1.0
 readonly KONG_IMAGE_TAG=2.2-alpine
 readonly KONG_HELM_TAG=1.10.0
 

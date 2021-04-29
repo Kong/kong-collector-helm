@@ -1,6 +1,6 @@
 image:
   repository: kong/immunity
-  tag: 4.0.0
+  tag: 4.1.0
   pullPolicy: IfNotPresent
 
 waitImage:
