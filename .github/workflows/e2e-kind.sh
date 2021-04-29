@@ -19,6 +19,7 @@ readonly KONG_IMMUNITY_IMAGE=immunity
 readonly APP_IMAGE_TAG=4.1.0
 readonly KONG_IMAGE_TAG=2.2-alpine
 readonly KONG_HELM_TAG=1.10.0
+CT_CONFIG=${CT_CONFIG:-ct.yaml}
 
 run_ct_container() {
     echo 'Running ct container...'
