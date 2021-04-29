@@ -130,7 +130,7 @@ $ helm dependency update ./charts/collector
    ip):32002`
 
 ```console
-$ helm install my-kong kong/kong --version 1.5.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
+$ helm install my-kong kong/kong --version 1.5.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip -n minikube):32001
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
