@@ -8,23 +8,6 @@ waitImage:
   tag: latest
   pullPolicy: IfNotPresent
 
-# These parameters enable collector to send requests to Kong Admin API
-kongAdmin:
-  # Set this to the Kong Admin API hostname
-  host: my-kong-kong-admin
-  # Set this to the Kong Admin API port
-  servicePort: 8001
-  # Set this to the Kong Admin API protocol
-  protocol: http
-  # Set this to the Kong Admin API token / KONG_PASSWORD
-  token:
-    valueFrom:
-      secretKeyRef:
-        name: kong-admin-token-secret
-        key: kong-admin-token
-  # Set this to override the name of the secret above
-  # existingSecret: kong-admin-token-secret
-
 collector:
   containerPort: 5000
   # Set a nodePort which is available

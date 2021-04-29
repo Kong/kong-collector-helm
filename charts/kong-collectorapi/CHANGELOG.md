@@ -2,6 +2,10 @@
 
 ### Unreleased
 
+### 0.4.2
+##### Removed
+- Brain docs
+
 ### 0.4.0
 ##### Improvements
 - Bump kong ee to 2.2.0.0

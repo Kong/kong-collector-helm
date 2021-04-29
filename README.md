@@ -3,15 +3,15 @@
 # Kong-Collector
 
 [Kong-Collector](https://konghq.com/products/kong-enterprise/kong-immunity) is
-an application which enables the use of Kong Brain and Kong Immunity.
+an application which enables the use of Kong Immunity.
 
-Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using
-a Collector API and a Collector Plugin to communicate with Kong Enterprise.
+Kong Immunity is an add-on to Kong Gateway, using
+a Collector API and a Collector Plugin to communicate with Kong Gateway.
 
 ## Introduction
 
 This chart bootstraps a
-[Kong-Collector](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/)
+[Kong-Collector](https://docs.konghq.com/enterprise/latest/immunity/install-configure/)
 deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 [Helm](https://helm.sh) package manager.
 
@@ -24,10 +24,6 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 ## Installing the Chart
 
-*This guide assumes you have a Kong Admin API reachable at
-   my-kong-kong-admin:8001, for instructions to set up Kong Enterprise Edition
-   with helm see the section below titled "Testing with minikube"*
-
 To install the chart with the release name `my-release`:
 
 1. Add RBAC user token secret.
@@ -37,19 +33,11 @@ $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admi
 secret/kong-admin-token-secret created
 ```
 
-2. Set up collector, overriding Kong Admin host, servicePort and token to ensure
-   Kong Admin API is reachable by collector, this will allow collector to push
-   swagger specs to Kong.
-
-```console
-$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
-```
-
 ```console
 $ curl -s http://kong:8001/<WORKSPACE>/collector/status kong-admin-token:my-token
 ```
 
-3. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
+2. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
 connect to collector, this url should be reachable within kubernetes.
 
 ```console
@@ -59,13 +47,13 @@ $ curl -s -X POST http://kong:8001/<WORKSPACE>/plugins \
   -d config.http_endpoint=http://my-release-kong-collectorapi:5000
 ```
 
-4. Check that collector is reachable by Kong Admin API.
+3. Check that collector is reachable by Kong Admin API.
 
 ```console
 $ curl -s http://kong:8001/<WORKSPACE>/collector/alerts kong-admin-token:my-token
 ```
 
-5. Ensure your Kong Manager is reachable and has the Immunity feature flag set.
+4. Ensure your Kong Manager is reachable and has the Immunity feature flag set.
 
 ```console
 KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}
@@ -91,11 +79,6 @@ and their default .Values.
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `image.repository`              | Kong-Collector Image repository                       | `kong/immunity`                    |
 | `image.tag`                     | Kong-Collector Image tag                              | `4.0.0`                                                                                  |
-| `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
-| `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
-| `kongAdmin.servicePort`                 | Port where Kong Admin API can be found                | `8001`                                                                                   |
-| `kongAdmin.token`                 | Token/Password used for making requests to Kong Admin API                | `my-token`                                                                                   |
-| `kongAdmin.existingSecret`                 | Name of existing secret to use for Kong Admin API Token/Password               | `nil`                                                                                   |
 | `collector.service.port`                      | TCP port on which the Collector service is exposed | `5000`                                                                                  |
 | `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`                                                                                  |
 | `collector.nodePort`                      | Port to access Collector API from outside the cluster | `31555`                                                                                  |
@@ -129,8 +112,8 @@ $ helm dependency update ./charts/kong-collectorapi
    ip):32002`
 
 ```console
-$ helm install my-kong kong/kong --version 1.5.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
-$ helm install my-release ./charts/kong-collectorapi --set kongAdmin.host=my-kong-kong-admin
+$ helm install my-kong kong/kong --version 2.1.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip):32001
+$ helm install my-release ./charts/kong-collectorapi
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
