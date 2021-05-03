@@ -2,11 +2,13 @@
 
 ### Unreleased
 
+
 ### 0.4.1
 ##### Improvements
 - Bump kong ee to 2.2.0.0
 - Bump Kong Collector to 4.1.0
 - Use dockerhub
+- Configured release on PR merge
 
 ### 0.4.0
 ##### Improvements
@@ -25,12 +27,6 @@
 #### Improvements
 
 - Pinned collector at 3.0.0
-
-### 0.1.9
-
-#### Improvements
-
-- Pinned collector at 2.0.3
 
 ### 0.1.8
 

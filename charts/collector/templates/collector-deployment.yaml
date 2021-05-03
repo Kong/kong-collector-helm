@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kong-collectorapi.fullname" . }}
+  name: {{ include "collector.fullname" . }}
   annotations: {}
   creationTimestamp: null
   labels:
-    {{- include "kong-collectorapi.metaLabels" . | nindent 4 }}
+    {{- include "collector.metaLabels" . | nindent 4 }}
     app.kubernetes.io/component: app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "kong-collectorapi.metaLabels" . | nindent 6 }}
+      {{- include "collector.metaLabels" . | nindent 6 }}
       app.kubernetes.io/component: app
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        {{- include "kong-collectorapi.metaLabels" . | nindent 8 }}
+        {{- include "collector.metaLabels" . | nindent 8 }}
         app.kubernetes.io/component: app
     spec:
     {{- with .Values.imagePullSecrets }}
@@ -26,9 +26,9 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       initContainers:
-      {{- include "kong-collectorapi.wait-for-db" . | nindent 6 }}
-      {{- include "kong-collectorapi.wait-for-redis" . | nindent 6 }}
-      {{- include "kong-collectorapi.wait-for-kong" . | nindent 6 }}
+      {{- include "collector.wait-for-db" . | nindent 6 }}
+      {{- include "collector.wait-for-redis" . | nindent 6 }}
+      {{- include "collector.wait-for-kong" . | nindent 6 }}
       containers:
       - name: collector
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -38,7 +38,7 @@ spec:
         - flask db upgrade && /collector/run-collector.sh
         env:
         - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
+          value: "redis://:{{ .Values.redis.password }}@{{ template "collector.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         - name: FLASK_APP
           value: /collector
         - name: KONG_PROTOCOL
@@ -57,7 +57,7 @@ spec:
             {{- end }}
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
+          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         ports:
         - containerPort: {{ .Values.collector.containerPort }}
         resources: {}
@@ -69,7 +69,7 @@ spec:
         - celery worker -l info -A collector.scheduler.celery --concurrency=1
         env:
         - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
+          value: "redis://:{{ .Values.redis.password }}@{{ template "collector.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         - name: KONG_PROTOCOL
           value: "{{ .Values.kongAdmin.protocol }}"
         - name: KONG_HOST
@@ -86,7 +86,7 @@ spec:
             {{- end }}
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "kong-collectorapi.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
+          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
       - name: celery-beat
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
@@ -95,7 +95,7 @@ spec:
         - celery beat -l info -A collector.scheduler.celery
         env:
         - name: CELERY_BROKER_URL
-          value: "redis://:{{ .Values.redis.password }}@{{ template "kong-collectorapi.redis.fullname" . }}:{{ .Values.redis.port }}/0"
+          value: "redis://:{{ .Values.redis.password }}@{{ template "collector.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         resources: {}
       restartPolicy: Always
 status: {}
