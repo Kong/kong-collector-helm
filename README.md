@@ -21,6 +21,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 - Kong Enterprise version 1.5+
   [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
 - A Kong workspace to enable traffic collection `<WORKSPACE>`
+- Helm 3.1+
 
 ## Installing the Chart
 
@@ -120,6 +121,12 @@ The following was tested on MacOS in minikube with the following configuration:
    kong-immunity-docker, kong-admin-token-secret)
 
 ```console
+$echo $KONG_LICENSE_DATA >> license \
+    && kubectl create secret generic kong-enterprise-license --from-file=./license \
+    && rm -rf license
+```
+
+```console
 $ minikube start --vm-driver hyperkit --memory='6144mb' --cpus=4
 $ helm repo add kong https://charts.konghq.com
 $ helm repo update
@@ -129,12 +136,43 @@ $ helm dependency update ./charts/collector
 2. Install both kong and collector charts then `open http://$(minikube ip -n minikube):32002`
 
 ```console
-$ helm install my-kong kong/kong -f kong-values.yaml --set env.admin_api_uri=$(minikube ip -n minikube):32001
+$ helm install my-kong kong/kong --version 2.1.0 -f kong-values.yaml --set env.admin_api_uri=$(minikube ip -n minikube):32001
+
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
+
 $ kubectl wait --for=condition=complete job --all && helm test my-release
 ```
 
-3. Create kong service and route then add a collector plugin pointing at the
+3. [OPTIONAL] Port forward some services so you can easily interact with your Kong and Collector services via localhost.  Each command line will need to be run in separate tabs.
+
+```console
+kubectl port-forward svc/my-kong-kong-admin 8001
+kubectl port-forward svc/my-kong-kong-manager 8002
+kubectl port-forward svc/my-release-kong-collectorapi 5000
+```
+
+4. Check to make sure collector is running well
+```console
+open http://localhost:5000/status
+```
+You should see this output in your browser:
+```
+{
+  "immunity": {
+    "available": true,
+    "version": "4.1.0"
+  },
+  "kong_status": {
+    "is_collector_plugin_bundled": true,
+    "url": "http://my-kong-kong-admin:8001",
+    "version": "2.2.1.3-enterprise-edition"
+  }
+}
+
+```
+The important thing to notice is that the section "kong_status" is not empty.  This signifies that both the kong service and collector service have been successfully installed and they can communicate with each other.
+
+5. Create kong service and route then add a collector plugin pointing at the
    collector service hostname and port reachable within kubernetes.
 
 ```console
