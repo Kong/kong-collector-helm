@@ -40,8 +40,7 @@ $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admi
 secret/kong-admin-token-secret created
 ```
 
-3. Set up collector, overriding Kong Admin host, servicePort and token to ensure
-   Kong Admin API is reachable by collector.
+3. Set up collector, overriding Kong Admin host, servicePort and token to ensure Kong Admin API is reachable by collector.
 ```console
 
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
@@ -80,7 +79,6 @@ and their default .Values.
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `image.repository`              | Kong-Collector Image repository                       | `kong/immunity`                    |
-
 | `image.tag`                     | Kong-Collector Image tag                              | `4.1.0`                                                                                  |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
@@ -107,7 +105,7 @@ The following was tested on MacOS in minikube with the following configuration:
 
 1. Start local kubernetes cluster and create license secret
 ```console
-$echo $KONG_LICENSE_DATA >> license \
+$ echo $KONG_LICENSE_DATA >> license \
     && kubectl create secret generic kong-enterprise-license --from-file=./license \
     && rm -rf license
 ```

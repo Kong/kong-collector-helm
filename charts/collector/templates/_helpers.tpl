@@ -119,6 +119,27 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
 {{- end -}}
 
+{{- define "collector.wait-for-kong" -}}
+- name: wait-for-kong
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+  env:
+  - name: KONG_ADMIN_HOST
+    value: "{{ .Values.kongAdmin.host }}"
+  - name: KONG_ADMIN_PORT
+    value: "{{ .Values.kongAdmin.servicePort }}"
+  - name: KONG_ADMIN_TOKEN
+    valueFrom:
+      secretKeyRef:
+      {{- if .Values.kongAdmin.existingSecret }}
+        name: {{ .Values.kongAdmin.existingSecret }}
+      {{- else }}
+        name: kong-admin-token-secret
+      {{- end }}  
+        key: kong-admin-token
+  command: [ "/bin/sh", "-c", "wget $KONG_ADMIN_HOST:$KONG_ADMIN_PORT --header=kong-admin-token:$KONG_ADMIN_TOKEN" ]
+{{- end -}}
+
 {{- define "collector.wait-for-redis" -}}
 - name: wait-for-redis
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"

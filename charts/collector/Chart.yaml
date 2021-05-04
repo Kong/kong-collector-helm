@@ -1,5 +1,4 @@
 apiVersion: v1
-
 name: collector
 description: Kong Immunity helps automate traffic analysis.
 home: https://konghq.com/
@@ -7,6 +6,7 @@ icon: https://s3.amazonaws.com/downloads.kong/universe/assets/icon-kong-inc-larg
 maintainers:
 - name: jackkav
   email: jack.kavanagh@konghq.com
-
-version: 0.4.2
+- name: wongstein
+  email: amy.wang@konghq.com
+version: 0.4.3
 appVersion: 4.1.0

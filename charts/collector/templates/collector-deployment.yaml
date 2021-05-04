@@ -28,6 +28,7 @@ spec:
       initContainers:
       {{- include "collector.wait-for-db" . | nindent 6 }}
       {{- include "collector.wait-for-redis" . | nindent 6 }}
+      {{- include "collector.wait-for-kong" . | nindent 6 }}
       containers:
       - name: collector
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
