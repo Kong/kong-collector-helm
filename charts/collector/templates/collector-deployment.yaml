@@ -26,6 +26,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       initContainers:
+      {{- include "collector.wait-for-db" . | nindent 6 }}
       {{- include "collector.wait-for-redis" . | nindent 6 }}
       containers:
       - name: collector

@@ -107,6 +107,18 @@ app.kubernetes.io/name: {{ include "collector.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
+{{- define "collector.wait-for-db" -}}
+- name: wait-for-db
+  image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
+  imagePullPolicy: {{ .Values.waitImage.pullPolicy }}
+  env:
+  - name: COLLECTOR_PG_HOST
+    value: {{ template "collector.postgresql.fullname" . }}
+  - name: COLLECTOR_PG_PORT
+    value: "{{ .Values.postgresql.service.port }}"
+  command: [ "/bin/sh", "-c", "until nc -zv $COLLECTOR_PG_HOST $COLLECTOR_PG_PORT -w1; do echo 'waiting for db'; sleep 1; done" ]
+{{- end -}}
+
 {{- define "collector.wait-for-redis" -}}
 - name: wait-for-redis
   image: "{{ .Values.waitImage.repository }}:{{ .Values.waitImage.tag }}"
