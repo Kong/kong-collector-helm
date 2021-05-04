@@ -47,13 +47,12 @@ secret/kong-admin-token-secret created
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
 ```
 
-4. Check that collector-plugin is reachable by Kong Admin API, and that it isn't already enabled on target workspace
+4. Check the status of the collector-plugin using the Kong Admin API.
 ```console
 $ curl -s http://kong:8001/<WORKSPACE>/collector/status kong-admin-token:my-token
 ```
 
-5. If status returns "enabled" = false, add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
-connect to collector, this url should be reachable within kubernetes.
+5. If status in step 4 returns "enabled" = false, Add the Kong Collector plugin using the Kong Admin API, which will allow Kong to connect to `collector`. This url should be reachable within Kubernetes
 
 ```console
 $ curl -s -X POST http://kong:8001/<WORKSPACE>/plugins \
