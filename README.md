@@ -3,15 +3,15 @@
 # Kong-Collector
 
 [Kong-Collector](https://konghq.com/products/kong-enterprise/kong-immunity) is
-an application which enables the use of Kong Brain and Kong Immunity.
+an application which enables the use of Kong Immunity.
 
-Kong Brain and Kong Immunity are installed as add-ons on Kong Enterprise, using
-a Collector API and a Collector Plugin to communicate with Kong Enterprise.
+Kong Immunity is an add-on to Kong Gateway, using
+a Collector API and a Collector Plugin to communicate with Kong Gateway.
 
 ## Introduction
 
 This chart bootstraps a
-[Kong-Collector](https://docs.konghq.com/enterprise/latest/brain-immunity/install-configure/)
+[Kong-Collector](https://docs.konghq.com/enterprise/latest/immunity/install-configure/)
 deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 [Helm](https://helm.sh) package manager.
 
@@ -20,58 +20,46 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 - Kubernetes 1.12+
 - Kong Enterprise version 1.5+
   [chart](https://github.com/Kong/charts/tree/master/charts/kong#kong-enterprise)
+  where the IMMUNITY_ENABLED variable has been set to true.
 - A Kong workspace to enable traffic collection `<WORKSPACE>`
 - Helm 3.1+
 
 ## Installing the Chart
 
-*This guide assumes you have a Kong Admin API reachable at
-   my-kong-kong-admin:8001, for instructions to set up Kong Enterprise Edition
-   with helm see the section below titled "Testing with minikube"*
-
 To install the chart with the release name `my-release`:
 
-1. Add RBAC user token secret.
+1. When Kong, make sure to set the IMMUNITY_ENABLED to true.  This does have to be done on Kong installation, and it is necessary to see the Immunity page on Kong Manager.
+```console
+helm install kong/kong --version=$KONG_HELM_VERSION --set IMMUNITY_ENABLED=true
+```
+
+2. Add RBAC user token secret.
 
 ```console
 $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admin-token=my-token
 secret/kong-admin-token-secret created
 ```
 
-2. Set up collector, overriding Kong Admin host, servicePort and token to ensure
-   Kong Admin API is reachable by collector, this will allow collector to push
-   swagger specs to Kong.
-
+3. Set up collector, overriding Kong Admin host, servicePort and token to ensure
+   Kong Admin API is reachable by collector.
 ```console
 
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
 ```
 
+4. Check the status of the collector-plugin using the Kong Admin API.
 ```console
 $ curl -s http://kong:8001/<WORKSPACE>/collector/status kong-admin-token:my-token
 ```
 
-3. Add a "Collector Plugin" using the Kong Admin API, this will allow Kong to
-connect to collector, this url should be reachable within kubernetes.
+5. If status in step 4 returns "enabled" = false, Add the Kong Collector plugin using the Kong Admin API, which will allow Kong to connect to `collector`. This url should be reachable within Kubernetes
 
 ```console
 $ curl -s -X POST http://kong:8001/<WORKSPACE>/plugins \
   -d name=collector \
-  -d config.flush_timeout=1 \
   -d config.http_endpoint=http://my-release-collector:5000
 ```
 
-4. Check that collector is reachable by Kong Admin API.
-
-```console
-$ curl -s http://kong:8001/<WORKSPACE>/collector/alerts kong-admin-token:my-token
-```
-
-5. Ensure your Kong Manager is reachable and has the Immunity feature flag set.
-
-```console
-KONG_ADMIN_GUI_FLAGS={"IMMUNITY_ENABLED":true}
-```
 
 ## Uninstalling the Chart
 
@@ -92,6 +80,7 @@ and their default .Values.
 | Parameter                       | Description                                           | Default                                                                                  |
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `image.repository`              | Kong-Collector Image repository                       | `kong/immunity`                    |
+
 | `image.tag`                     | Kong-Collector Image tag                              | `4.1.0`                                                                                  |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
@@ -116,10 +105,7 @@ and their default .Values.
 
 The following was tested on MacOS in minikube with the following configuration:
 
-1. Start local kubernetes cluster and create all four required secrets.
-   (kong-enterprise-license, kong-enterprise-edition-docker,
-   kong-immunity-docker, kong-admin-token-secret)
-
+1. Start local kubernetes cluster and create license secret
 ```console
 $echo $KONG_LICENSE_DATA >> license \
     && kubectl create secret generic kong-enterprise-license --from-file=./license \

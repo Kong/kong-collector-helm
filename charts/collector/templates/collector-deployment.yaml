@@ -28,7 +28,6 @@ spec:
       initContainers:
       {{- include "collector.wait-for-db" . | nindent 6 }}
       {{- include "collector.wait-for-redis" . | nindent 6 }}
-      {{- include "collector.wait-for-kong" . | nindent 6 }}
       containers:
       - name: collector
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -41,6 +40,8 @@ spec:
           value: "redis://:{{ .Values.redis.password }}@{{ template "collector.redis.fullname" . }}:{{ .Values.redis.port }}/0"
         - name: FLASK_APP
           value: /collector
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         - name: KONG_PROTOCOL
           value: "{{ .Values.kongAdmin.protocol }}"
         - name: KONG_HOST
@@ -56,8 +57,6 @@ spec:
               name: kong-admin-token-secret
             {{- end }}
               key: kong-admin-token
-        - name: SQLALCHEMY_DATABASE_URI
-          value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
         ports:
         - containerPort: {{ .Values.collector.containerPort }}
         resources: {}

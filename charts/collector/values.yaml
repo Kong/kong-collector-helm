@@ -8,7 +8,6 @@ waitImage:
   tag: latest
   pullPolicy: IfNotPresent
 
-# These parameters enable collector to send requests to Kong Admin API
 kongAdmin:
   # Set this to the Kong Admin API hostname
   host: my-kong-kong-admin
