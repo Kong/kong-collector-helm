@@ -83,13 +83,13 @@ and their default .Values.
 | `kongAdmin.token`                 | Token/Password used for making requests to Kong Admin API                | `my-token`                                                                                   |
 | `kongAdmin.existingSecret`                 | Name of existing secret to use for Kong Admin API Token/Password               | `nil`                                                                                   |
 | `collector.service.port`                      | TCP port on which the Collector service is exposed | `5000`                                                                                  |
-| `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`                                                                                  |
+| `collector.containerPort`                      | TCP port on which Collector listens for kong traffic | `5000`
+                                                                                  |
 | `collector.nodePort`                      | Port to access Collector API from outside the cluster | `31555`
-|
+
 | `collector.max_har_storage`                      | Number of requests to leave in PostgresDB after daily cleaning | `2000000`
-|
+
 | `collector.traffic_alert_min`                      | The number of consecutive minutes of abnormal traffic before sending a traffic alert | `1`
-|                                                                               |
 | `postgresql.enabled` | Deploy PostgreSQL server as subchart                            | `true`                                                                              |
 | `postgresql.host` | PostgreSQL hostname for connecting to existing instance                              | `collector-database`                                                                              |
 | `postgresql.postgresqlDatabase` | PostgreSQL dataname name                              | `collector`                                                                              |
