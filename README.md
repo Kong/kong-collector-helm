@@ -28,10 +28,7 @@ deployment on a [Kubernetes](http://kubernetes.io) cluster using the
 
 To install the chart with the release name `my-release`:
 
-1. When Kong, make sure to set the IMMUNITY_ENABLED to true.  This does have to be done on Kong installation, and it is necessary to see the Immunity page on Kong Manager.
-```console
-helm install kong/kong --version=$KONG_HELM_VERSION --set IMMUNITY_ENABLED=true
-```
+1. When Kong, make sure that admin_gui_flags includes an "IMMUNITY_ENABLED" set to true.  An example of this can be found in kong-values.yaml file in this repo.  This does have to be done on Kong installation, and it is necessary to see the Alerts page on Kong Manager.
 
 2. Add RBAC user token secret.
 
