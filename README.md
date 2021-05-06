@@ -77,7 +77,6 @@ and their default .Values.
 | ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 
 | `image.repository`              | Kong-Collector Image repository                       | `kong/immunity`  |
-
 | `image.tag`                     | Kong-Collector Image tag                              | `4.1.0`  |                                                                                  |
 | `kongAdmin.protocol`                 | Protocol on which Kong Admin API can be found            | `http`                                                                     |
 | `kongAdmin.host`                 | Hostname where Kong Admin API can be found            | `my-kong-kong-admin`                                                                     |
