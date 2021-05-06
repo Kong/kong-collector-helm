@@ -87,6 +87,10 @@ spec:
               key: kong-admin-token
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
+        - name: MAX_HARS_STORAGE
+          value: "{{ .Values.collector.max_hars_storage }}"
+        - name: TRAFFIC_ALERT_MIN
+          value: "{{ .Values.collector.traffic_alert_min }}"
       - name: celery-beat
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
