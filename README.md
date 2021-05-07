@@ -37,7 +37,7 @@ $ kubectl create secret generic kong-admin-token-secret --from-literal=kong-admi
 secret/kong-admin-token-secret created
 ```
 
-3. Set up collector, overriding Kong Admin host, servicePort and token to ensure Kong Admin API is reachable by collector.
+3. Set up collector, overriding Kong Admin host, servicePort, and token to ensure Kong Admin API is reachable by collector.
 ```console
 
 $ helm install my-release ./charts/collector --set kongAdmin.host=my-kong-kong-admin
