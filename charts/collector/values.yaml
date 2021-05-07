@@ -32,9 +32,9 @@ collector:
   service:
     type: ClusterIP
     port: 5000
-  # Set this to the number of requests that will remain in the PostGresDB post daily cleaning
+  # Set this to the number of requests that will remain in the PostgreSQL post daily cleaning
   max_har_storage: 2000000
-  # Set this to the number of consequetive minutes of abnormal traffic needed to triggerr a traffic alert
+  # Set this to the number of consecutive minutes of abnormal traffic needed to trigger a traffic alert
   traffic_alert_min: 1
 
 postgresql:
@@ -64,7 +64,3 @@ redis:
 
 ingress:
   enabled: false
-
-exteralSecrets:
-  enabled: false
-  path: /cloud.konghq.com/dockerhub/kongcloud/dockerconfigjson
