@@ -8,6 +8,7 @@ waitImage:
   tag: latest
   pullPolicy: IfNotPresent
 
+# These parameters enable collector to resolve names in the alerts
 kongAdmin:
   # Set this to the Kong Admin API hostname
   host: my-kong-kong-admin
