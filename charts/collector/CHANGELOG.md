@@ -1,6 +1,9 @@
 ## Changelog
 
 ### Unreleased
+### 0.4.3
+##### Added
+- Collector Env Vars
 
 ### 0.4.2
 ##### Removed
