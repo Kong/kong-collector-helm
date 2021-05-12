@@ -32,7 +32,7 @@ collector:
   service:
     type: ClusterIP
     port: 5000
-  # Set this to the number of requests that will remain in the PostgreSQL post daily cleaning
+  # Set this to the number of allowed consecutive minutes of abnormal traffic, meaning that there are sudden unexpected traffic drops or increases, or the traffic pattern is suddenly erratic. If traffic remains abnormal past the set time limit, it triggers an alert.
   max_har_storage: 2000000
   # Set this to the number of consecutive minutes of abnormal traffic needed to trigger a traffic alert
   traffic_alert_min: 1
@@ -68,4 +68,3 @@ ingress:
 exteralSecrets:
   enabled: false
   path: /cloud.konghq.com/dockerhub/kongcloud/dockerconfigjson
-
