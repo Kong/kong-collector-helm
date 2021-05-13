@@ -1,6 +1,15 @@
 ## Changelog
 
 ### Unreleased
+### 0.4.4
+#### Improvements
+
+- Synced github actions with kong/charts
+### 0.4.3
+#### Improvements
+
+- Configured release on PR merge
+- Fixed doc table
 
 ### 0.4.2
 ##### Removed

@@ -1,5 +1,3 @@
-name: Release Charts
-
 on:
   push:
     branches:
@@ -7,24 +5,41 @@ on:
 
 jobs:
   lint-test:
+    env:
+      COMMON_CT_ARGS: "--chart-repos kong=https://charts.konghq.com bitnami=https://charts.bitnami.com/bitnami --remote origin --target-branch master"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Run chart-testing (lint)
-        id: lint
-        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        uses: actions/checkout@v2
         with:
-          command: lint
-          config: ct-master.yaml
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.2.4
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.0.1
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed)
+          if [[ -n "$changed" ]]; then
+            echo "::set-output name=changed::true"
+          fi
+      - name: Run chart-testing (lint)
+        run: ct lint $COMMON_CT_ARGS
 
       - name: Create kind cluster and install
+        if: steps.list-changed.outputs.changed == 'true'
         env:
           KONG_LICENSE_DATA: ${{ secrets.LICENSE }}
-          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-          CT_CONFIG: ct-master.yaml
         run: |
           bash .github/workflows/e2e-kind.sh
   release:
@@ -32,23 +47,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+
+      - name: Fetch history
+        run: git fetch --prune --unshallow
 
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       # See https://github.com/helm/chart-releaser-action/issues/6
-      - name: Install Helm
-        run: |
-          curl -sSLo get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get
-          chmod 700 get_helm.sh
-          ./get_helm.sh
-          helm init --client-only
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.2.4
+
       - name: Add dependency chart repos
         run: |
-          helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.0.0-alpha.2
+        uses: helm/chart-releaser-action@v1.1.0
         env:
           CR_TOKEN: "${{ secrets.CR_TOKEN }}"
