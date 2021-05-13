@@ -11,7 +11,7 @@ on:
 jobs:
   lint-test:
     env:
-      COMMON_CT_ARGS: "--chart-repos kong=https://charts.konghq.com bitnami=https://charts.bitnami.com/bitnami --remote origin --target-branch master"
+      COMMON_CT_ARGS: "--chart-repos 'bitnami=https://charts.bitnami.com/bitnami kong=https://charts.konghq.com' --remote origin --target-branch master"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
