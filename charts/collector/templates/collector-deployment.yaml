@@ -76,6 +76,10 @@ spec:
           value: "{{ .Values.kongAdmin.host }}"
         - name: KONG_PORT
           value: "{{ .Values.kongAdmin.servicePort }}"
+        - name: MAX_HARS_STORAGE
+          value: "{{ .Values.collector.max_hars_storage }}"
+        - name: TRAFFIC_ALERT_MIN
+          value: "{{ .Values.collector.traffic_alert_min }}"
         - name: KONG_ADMIN_TOKEN
           valueFrom:
             secretKeyRef:
