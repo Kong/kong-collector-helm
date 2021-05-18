@@ -1,6 +1,10 @@
 ## Changelog
 
 ### Unreleased
+### 0.4.5
+#### Improvements
+- Add missing environment variables to Collector
+
 ### 0.4.4
 #### Improvements
 

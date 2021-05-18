@@ -32,6 +32,10 @@ collector:
   service:
     type: ClusterIP
     port: 5000
+  # Set this to the maximum number of requests to keep in the PostgreSQL database. Any requests over this number are cleaned out daily, starting from the oldest request.
+  max_har_storage: 2000000
+  # Set this to the number of allowed consecutive minutes of abnormal traffic, meaning that there are sudden unexpected traffic drops or increases, or the traffic pattern is suddenly erratic. If traffic remains abnormal past the set time limit, it triggers an alert.
+  traffic_alert_min: 1
 
 postgresql:
   ## Set to false if bringing your own postgresql
