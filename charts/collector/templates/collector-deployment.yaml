@@ -28,7 +28,6 @@ spec:
       initContainers:
       {{- include "collector.wait-for-db" . | nindent 6 }}
       {{- include "collector.wait-for-redis" . | nindent 6 }}
-      {{- include "collector.wait-for-kong" . | nindent 6 }}
       containers:
       - name: collector
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -50,14 +49,7 @@ spec:
         - name: KONG_PORT
           value: "{{ .Values.kongAdmin.servicePort }}"
         - name: KONG_ADMIN_TOKEN
-          valueFrom:
-            secretKeyRef:
-            {{- if .Values.kongAdmin.existingSecret }}
-              name: {{ .Values.kongAdmin.existingSecret }}
-            {{- else }}
-              name: kong-admin-token-secret
-            {{- end }}
-              key: kong-admin-token
+          value: " {{ .Values.kongAdmin.token }}"
         ports:
         - containerPort: {{ .Values.collector.containerPort }}
         resources: {}
@@ -81,14 +73,7 @@ spec:
         - name: TRAFFIC_ALERT_MIN
           value: "{{ .Values.collector.traffic_alert_min }}"
         - name: KONG_ADMIN_TOKEN
-          valueFrom:
-            secretKeyRef:
-            {{- if .Values.kongAdmin.existingSecret }}
-              name: {{ .Values.kongAdmin.existingSecret }}
-            {{- else }}
-              name: kong-admin-token-secret
-            {{- end }}
-              key: kong-admin-token
+          value: " {{ .Values.kongAdmin.token }}"
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
       - name: celery-beat

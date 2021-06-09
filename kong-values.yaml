@@ -44,11 +44,7 @@ env:
   pg_port: 5432
   admin_listen: 0.0.0.0:8001, 0.0.0.0:32001
   admin_gui_flags: '{"IMMUNITY_ENABLED":true}'
-  password:
-    valueFrom:
-      secretKeyRef:
-        name: kong-admin-token-secret
-        key: kong-admin-token
+  kong-admin-token-secret: handyshake
   enforce_rbac: "on"
   admin_gui_auth: basic-auth
   admin_gui_session_conf: '{"cookie_name":"admin_session","secret":"super-secret","cookie_secure":false,"storage":"kong"}'
