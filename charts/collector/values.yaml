@@ -11,13 +11,13 @@ waitImage:
 # These parameters enable collector to resolve names in the alerts
 kongAdmin:
   # Set this to the Kong Admin API hostname
-  host: my-kong-kong-admin
+  host: notkongbb4f37-kong-cp.kong-cps-03.svc.cluster.local
   # Set this to the Kong Admin API port
   servicePort: 8001
   # Set this to the Kong Admin API protocol
   protocol: http
   # Set this to the Kong Admin API token / KONG_PASSWORD
-  token: handyshake
+  token: ~
   # Set this to override the name of the secret above
   # existingSecret: kong-admin-token-secret
 
