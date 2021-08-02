@@ -48,8 +48,8 @@ spec:
           value: "{{ .Values.kongAdmin.host }}"
         - name: KONG_PORT
           value: "{{ .Values.kongAdmin.servicePort }}"
-        - name: KONG_ADMIN_TOKEN
-          value: " {{ .Values.kongAdmin.token }}"
+        # - name: KONG_ADMIN_TOKEN
+        #   value: " {{ .Values.kongAdmin.token }}"
         ports:
         - containerPort: {{ .Values.collector.containerPort }}
         resources: {}
@@ -72,8 +72,8 @@ spec:
           value: "{{ .Values.collector.max_hars_storage }}"
         - name: TRAFFIC_ALERT_MIN
           value: "{{ .Values.collector.traffic_alert_min }}"
-        - name: KONG_ADMIN_TOKEN
-          value: " {{ .Values.kongAdmin.token }}"
+        # - name: KONG_ADMIN_TOKEN
+        #   value: " {{ .Values.kongAdmin.token }}"
         - name: SQLALCHEMY_DATABASE_URI
           value: "postgres://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ template "collector.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ .Values.postgresql.postgresqlDatabase }}"
       - name: celery-beat

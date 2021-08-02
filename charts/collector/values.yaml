@@ -17,7 +17,7 @@ kongAdmin:
   # Set this to the Kong Admin API protocol
   protocol: http
   # Set this to the Kong Admin API token / KONG_PASSWORD
-  token: password
+  #token: password
   # Set this to override the name of the secret above
   # existingSecret: kong-admin-token-secret
 
