@@ -10,6 +10,7 @@ on:
 
 jobs:
   lint-test:
+    timeout-minutes: ${{ fromJSON(vars.GHA_DEFAULT_TIMEOUT) }}
     env:
       COMMON_CT_ARGS: "--chart-repos 'bitnami=https://charts.bitnami.com/bitnami kong=https://charts.konghq.com' --remote origin --target-branch master"
     runs-on: ubuntu-latest
